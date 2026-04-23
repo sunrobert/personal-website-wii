@@ -1,5 +1,8 @@
 // Shared script for sub-pages: scaling, back button, audio (mute persisted).
 import { installScaler } from "./scale.js";
+import { installCursor } from "./cursor.js";
+
+installCursor();
 
 const stage = document.querySelector(".subpage-stage");
 if (stage) installScaler(stage);

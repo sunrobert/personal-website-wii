@@ -5,6 +5,9 @@ import { renderBottomBar, installBottomBarNav } from "./bottom-bar.js";
 import { startClock } from "./clock.js";
 import { initAudio, playHover } from "./audio.js";
 import { zoomIntoChannel, zoomOutToMenu } from "./transitions.js";
+import { installCursor } from "./cursor.js";
+
+installCursor();
 
 const stage = document.getElementById("stage");
 installScaler(stage);
