@@ -11,7 +11,7 @@ function throttle(fn, delay) {
   };
 }
 
-function mountPointer(srcIdle, srcClicked, opacity, throttleMs, zIndex) {
+function mountPointer({ srcIdle, srcClicked, opacity, throttleMs, zIndex, smooth }) {
   const img = document.createElement("img");
   img.src = srcIdle;
   img.alt = "";
@@ -25,35 +25,39 @@ function mountPointer(srcIdle, srcClicked, opacity, throttleMs, zIndex) {
     pointer-events: none;
     user-select: none;
     transform: translate3d(-9999px, -9999px, 0);
-    opacity: ${opacity};
+    opacity: 0;
     z-index: ${zIndex};
-    transition: transform 80ms linear, opacity 150ms ease-out;
+    ${smooth ? "transition: transform 70ms ease-out, opacity 150ms ease-out;" : "transition: opacity 150ms ease-out;"}
     filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.25));
     will-change: transform;
   `;
   document.body.appendChild(img);
 
-  let rafId = 0;
+  let clicked = false;
   let visible = false;
+  let x = 0, y = 0;
 
-  const move = throttle((e) => {
-    if (rafId) cancelAnimationFrame(rafId);
+  const setTransform = () => {
+    img.style.transform = `translate3d(${x}px, ${y}px, 0)${clicked ? " scale(0.95)" : ""}`;
+  };
+
+  const baseMove = (e) => {
+    x = e.clientX;
+    y = e.clientY;
     if (!visible) {
       img.style.opacity = String(opacity);
       visible = true;
     }
-    rafId = requestAnimationFrame(() => {
-      img.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
-    });
-  }, throttleMs);
+    setTransform();
+  };
 
-  const enter = () => { img.style.opacity = String(opacity); visible = true; };
+  const move = throttleMs > 0 ? throttle(baseMove, throttleMs) : baseMove;
+
   const leave = () => { img.style.opacity = "0"; visible = false; };
-  const down = () => { img.src = srcClicked; img.style.transform += " scale(0.95)"; };
-  const up = () => { img.src = srcIdle; };
+  const down = () => { clicked = true; img.src = srcClicked; setTransform(); };
+  const up = () => { clicked = false; img.src = srcIdle; setTransform(); };
 
   document.addEventListener("mousemove", move);
-  document.addEventListener("mouseenter", enter);
   document.addEventListener("mouseleave", leave);
   document.addEventListener("mousedown", down);
   document.addEventListener("mouseup", up);
@@ -72,7 +76,22 @@ export function installCursor() {
   `;
   document.head.appendChild(style);
 
-  // Trail first (lower z, slightly laggy), then the main hand pointer.
-  mountPointer("assets/trail.svg", "assets/trail.svg", 0.4, 8, 999);
-  mountPointer("assets/cursor.svg", "assets/cursor-clicked.svg", 1, 0, 1000);
+  // Trail: throttled + eased, so it visibly lags behind.
+  mountPointer({
+    srcIdle: "assets/trail.svg",
+    srcClicked: "assets/trail.svg",
+    opacity: 0.4,
+    throttleMs: 16,
+    zIndex: 999,
+    smooth: true,
+  });
+  // Main hand: zero throttle, no transition, 1:1 with mouse.
+  mountPointer({
+    srcIdle: "assets/cursor.svg",
+    srcClicked: "assets/cursor-clicked.svg",
+    opacity: 1,
+    throttleMs: 0,
+    zIndex: 1000,
+    smooth: false,
+  });
 }
