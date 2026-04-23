@@ -1,5 +1,7 @@
 import { playSelect } from "./audio.js";
 
+const prefersReducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
 // Zooms the clicked channel to fill the stage, flashes white, then navigates.
 export function zoomIntoChannel(channelEl, href) {
   playSelect();
@@ -13,21 +15,23 @@ export function zoomIntoChannel(channelEl, href) {
   const dx = (stageRect.left + stageRect.width / 2) - (rect.left + rect.width / 2);
   const dy = (stageRect.top + stageRect.height / 2) - (rect.top + rect.height / 2);
 
+  if (prefersReducedMotion()) {
+    const id = channelEl.dataset.channelId;
+    gsap.to(flash, {
+      opacity: 1, duration: 0.15,
+      onComplete: () => { window.location.href = `${href}?from=${encodeURIComponent(id)}`; },
+    });
+    return;
+  }
+
   const tl = gsap.timeline({
     onComplete: () => {
       const id = channelEl.dataset.channelId;
       window.location.href = `${href}?from=${encodeURIComponent(id)}`;
     },
   });
-
   tl.to(others, { opacity: 0, scale: 0.9, duration: 0.25, ease: "power2.in" }, 0);
-  tl.to(channelEl, {
-    x: dx,
-    y: dy,
-    scale: scale,
-    duration: 0.35,
-    ease: "expo.in",
-  }, 0);
+  tl.to(channelEl, { x: dx, y: dy, scale: scale, duration: 0.35, ease: "expo.in" }, 0);
   tl.to(flash, { opacity: 1, duration: 0.12, ease: "power1.out" }, 0.3);
 }
 
@@ -35,6 +39,12 @@ export function zoomIntoChannel(channelEl, href) {
 export function zoomOutToMenu(returnId) {
   const channelEl = document.querySelector(`.channel--active[data-channel-id="${returnId}"]`);
   if (!channelEl) return;
+
+  if (prefersReducedMotion()) {
+    const flash = document.getElementById("flash-overlay");
+    gsap.to(flash, { opacity: 0, duration: 0.2 });
+    return;
+  }
 
   const stage = document.getElementById("stage");
   const flash = document.getElementById("flash-overlay");
