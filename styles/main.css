@@ -1,0 +1,24 @@
+:root {
+  --menu-bg: #e8e8e8;
+  --stage-w: 1280px;
+  --stage-h: 720px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  width: 100%; height: 100%;
+  background: var(--menu-bg);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  overflow: hidden;
+}
+#letterbox {
+  width: 100vw; height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+}
+#stage {
+  width: var(--stage-w);
+  height: var(--stage-h);
+  position: relative;
+  background: var(--menu-bg);
+  transform-origin: center center;
+  overflow: hidden;
+}
