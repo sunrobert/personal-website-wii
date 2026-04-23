@@ -109,3 +109,12 @@
   font-size: 36px;
   letter-spacing: 0.05em;
 }
+
+#flash-overlay {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 100;
+}
