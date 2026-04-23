@@ -1,5 +1,6 @@
 import { installScaler } from "./scale.js";
+import { renderGrid } from "./channels.js";
 
 const stage = document.getElementById("stage");
 installScaler(stage);
-console.log("Wii Menu boot");
+renderGrid(document.getElementById("channels"));
