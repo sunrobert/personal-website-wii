@@ -1,7 +1,7 @@
 :root {
   --menu-bg: #e8e8e8;
-  --stage-w: 1280px;
-  --stage-h: 720px;
+  --stage-w: 985px;
+  --stage-h: 554px;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html, body {
@@ -11,7 +11,8 @@ html, body {
   overflow: hidden;
 }
 #letterbox {
-  width: 100vw; height: 100vh;
+  width: 100vw;
+  height: calc(100vh - 100px); /* reserve space for the fixed bottom bar */
   display: flex; align-items: center; justify-content: center;
 }
 #stage {
@@ -20,7 +21,9 @@ html, body {
   position: relative;
   background: var(--menu-bg);
   transform-origin: center center;
-  overflow: hidden;
+  /* Overflow visible so the 3% hover scale on edge tiles isn't clipped.
+     The flash-overlay is position:absolute inset:0 so it still covers correctly. */
+  overflow: visible;
 }
 @font-face {
   font-family: "DSEG7";
@@ -30,10 +33,11 @@ html, body {
   font-display: swap;
 }
 
-/* Subtle CRT scanline overlay (no vignette — would create a visible seam at the letterbox). */
-#stage::before {
+/* Subtle CRT scanline overlay covering the whole viewport (not just the stage),
+   so there's no visible seam where the scaled stage meets the letterbox area. */
+body::before {
   content: "";
-  position: absolute;
+  position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 50;

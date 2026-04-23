@@ -1,12 +1,23 @@
 export function renderBottomBar(container) {
   container.innerHTML = `
     <svg class="swoosh" viewBox="0 0 1280 100" preserveAspectRatio="none" aria-hidden="true">
-      <path class="swoosh-path"
-            d="M0,55 Q200,10 400,40 T800,45 T1280,30 L1280,100 L0,100 Z"
-            fill="#bfe1ff" opacity="0.7"/>
+      <defs>
+        <linearGradient id="swoosh-fill-grad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#e6e8ec" stop-opacity="0.95"/>
+          <stop offset="55%" stop-color="#c9ccd2" stop-opacity="0.95"/>
+          <stop offset="100%" stop-color="#b9bcc2" stop-opacity="0.95"/>
+        </linearGradient>
+      </defs>
+      <path class="swoosh-fill"
+            d="M-60,55 Q200,10 400,40 T800,45 T1340,30 L1340,100 L-60,100 Z"
+            fill="url(#swoosh-fill-grad)"/>
+      <path class="swoosh-glow"
+            d="M-60,55 Q200,10 400,40 T800,45 T1340,30"
+            fill="none" stroke="#6fb6ff" stroke-width="8" opacity="0.35"
+            filter="blur(1px)"/>
       <path class="swoosh-line"
-            d="M0,55 Q200,10 400,40 T800,45 T1280,30"
-            fill="none" stroke="#6fb6ff" stroke-width="2" opacity="0.9"/>
+            d="M-60,55 Q200,10 400,40 T800,45 T1340,30"
+            fill="none" stroke="#5fa8e6" stroke-width="2.5" opacity="1"/>
     </svg>
     <button class="bb-btn bb-btn--avatar" aria-label="Profile">
       <img src="assets/avatar.jpg" alt="" />

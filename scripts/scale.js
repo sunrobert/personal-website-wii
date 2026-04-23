@@ -1,5 +1,5 @@
-export const STAGE_W = 1280;
-export const STAGE_H = 720;
+export const STAGE_W = 985;
+export const STAGE_H = 554;
 
 // Uniform scale (kept for tests / letterboxed mode).
 export function computeScale(viewportW, viewportH) {
@@ -11,8 +11,15 @@ export function computeFillScale(viewportW, viewportH) {
   return { sx: viewportW / STAGE_W, sy: viewportH / STAGE_H };
 }
 
+// Height of the fixed bottom bar on the main menu; the scaler reserves this space.
+const BOTTOM_BAR_H = 100;
+// Extra zoom applied on top of fit-to-viewport scale. Stage clips overflow.
+const ZOOM = 1.3;
+
 export function applyScale(stageEl) {
-  const scale = computeScale(window.innerWidth, window.innerHeight);
+  const onMenu = stageEl.id === "stage";
+  const h = onMenu ? window.innerHeight - BOTTOM_BAR_H : window.innerHeight;
+  const scale = computeScale(window.innerWidth, h) * ZOOM;
   stageEl.style.transform = `scale(${scale})`;
 }
 
