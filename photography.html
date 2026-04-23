@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Photography</title>
+  <link rel="stylesheet" href="styles/main.css" />
+  <link rel="stylesheet" href="styles/subpage.css" />
+  <style>
+    .photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .photo {
+      aspect-ratio: 4 / 3;
+      background: linear-gradient(135deg,#eee,#ccc);
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+      display: flex; align-items: center; justify-content: center;
+      color: #888; font-size: 14px;
+    }
+  </style>
+</head>
+<body class="subpage">
+  <div id="letterbox">
+    <div class="subpage-stage">
+      <div id="flash-overlay"></div>
+      <header class="subpage-header">
+        <img class="subpage-icon" src="assets/channels/photography.png" alt="" />
+        <h1 class="subpage-title">Photography</h1>
+      </header>
+      <section class="subpage-panel">
+        <div class="photo-grid">
+          <div class="photo">Photo 1</div>
+          <div class="photo">Photo 2</div>
+          <div class="photo">Photo 3</div>
+          <div class="photo">Photo 4</div>
+          <div class="photo">Photo 5</div>
+          <div class="photo">Photo 6</div>
+        </div>
+      </section>
+      <button class="wii-menu-btn" data-channel-id="photography">Wii Menu</button>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/howler@2.2.4/dist/howler.min.js"></script>
+  <script type="module" src="scripts/subpage.js"></script>
+</body>
+</html>
