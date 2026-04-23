@@ -78,3 +78,23 @@
 @media (prefers-reduced-motion: reduce) {
   #bottom-bar { animation: none; }
 }
+
+@keyframes swoosh-drift {
+  0%   { transform: translateX(-20px); }
+  50%  { transform: translateX(20px); }
+  100% { transform: translateX(-20px); }
+}
+
+.swoosh-path, .swoosh-line {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: swoosh-drift 20s ease-in-out infinite;
+}
+
+.swoosh-line {
+  animation-delay: -2s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .swoosh-path, .swoosh-line { animation: none; }
+}
