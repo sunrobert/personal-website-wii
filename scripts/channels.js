@@ -1,4 +1,3 @@
-// 4 columns x 3 rows = 12 slots, row-major (slot 0 is top-left)
 export const CHANNELS = [
   { slot: 0, id: "photography", title: "Photography",      href: "photography.html", art: "assets/channels/photography.png" },
   { slot: 1, id: "social",      title: "Social Links",     href: "social.html",      art: "assets/channels/social.png" },
@@ -16,6 +15,7 @@ export function renderGrid(container) {
     el.dataset.slot = String(slot);
     if (channel) {
       el.dataset.channelId = channel.id;
+      el.dataset.href = channel.href;
       el.setAttribute("aria-label", channel.title);
       el.innerHTML = `
         <img class="channel__art" src="${channel.art}" alt="" />
