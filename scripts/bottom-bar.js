@@ -18,3 +18,17 @@ export function renderBottomBar(container) {
     <button class="bb-btn bb-btn--envelope" aria-label="Messages">✉</button>
   `;
 }
+
+export function installBottomBarNav() {
+  const envelope = document.querySelector(".bb-btn--envelope");
+  envelope?.addEventListener("click", async () => {
+    const { playSelect } = await import("./audio.js");
+    playSelect();
+    const flash = document.getElementById("flash-overlay");
+    gsap.to(flash, {
+      opacity: 1,
+      duration: 0.2,
+      onComplete: () => { window.location.href = "messages.html"; },
+    });
+  });
+}

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wii Message Board</title>
+  <link rel="stylesheet" href="styles/main.css" />
+  <link rel="stylesheet" href="styles/subpage.css" />
+  <style>
+    .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
+    .msg-day {
+      aspect-ratio: 1; background: #fafafa; border: 1px solid #eee; border-radius: 6px;
+      padding: 6px; font-size: 11px; color: #888; position: relative;
+    }
+    .msg-day.has-msg { background: #fff4d4; border-color: #e9d07a; }
+    .msg-day .dot { position: absolute; bottom: 4px; right: 4px; font-size: 14px; }
+    .message-feed { margin-top: 20px; }
+    .message-feed article {
+      padding: 14px 16px; background: #fffdf2; border: 1px solid #f0e3a8;
+      border-radius: 10px; margin-bottom: 10px;
+    }
+    .message-feed h3 { font-size: 15px; margin: 0 0 6px; color: #6a5a1a; }
+    .message-feed p { font-size: 14px; color: #555; line-height: 1.4; }
+  </style>
+</head>
+<body class="subpage">
+  <div id="letterbox">
+    <div class="subpage-stage">
+      <div id="flash-overlay"></div>
+      <header class="subpage-header">
+        <div class="subpage-icon" style="background:#fff; display:flex; align-items:center; justify-content:center; font-size:44px;">✉</div>
+        <h1 class="subpage-title">Wii Message Board</h1>
+      </header>
+      <section class="subpage-panel">
+        <div class="calendar-grid" id="calendar"></div>
+        <div class="message-feed">
+          <article><h3>Welcome</h3><p>This is the Wii Message Board. Announcements, updates, and milestones show up here.</p></article>
+          <article><h3>Site launched</h3><p>This Wii-menu portfolio went live. Thanks for stopping by.</p></article>
+        </div>
+      </section>
+      <button class="wii-menu-btn" data-channel-id="__envelope">Wii Menu</button>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/howler@2.2.4/dist/howler.min.js"></script>
+  <script type="module" src="scripts/subpage.js"></script>
+  <script type="module">
+    const grid = document.getElementById("calendar");
+    const today = new Date();
+    const markedDay = today.getDay();
+    for (let i = 0; i < 28; i++) {
+      const d = document.createElement("div");
+      d.className = "msg-day" + (i % 7 === markedDay && i < 7 ? " has-msg" : "");
+      d.innerHTML = `<span>${i + 1}</span>${i % 7 === markedDay && i < 7 ? '<span class="dot">✉</span>' : ""}`;
+      grid.appendChild(d);
+    }
+  </script>
+</body>
+</html>

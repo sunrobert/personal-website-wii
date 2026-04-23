@@ -1,7 +1,7 @@
 import { installScaler } from "./scale.js";
 import { renderGrid } from "./channels.js";
 import { installKeyboardNav } from "./nav.js";
-import { renderBottomBar } from "./bottom-bar.js";
+import { renderBottomBar, installBottomBarNav } from "./bottom-bar.js";
 import { startClock } from "./clock.js";
 import { initAudio, playHover } from "./audio.js";
 import { zoomIntoChannel, zoomOutToMenu } from "./transitions.js";
@@ -14,6 +14,7 @@ renderGrid(grid);
 installKeyboardNav(grid);
 
 renderBottomBar(document.getElementById("bottom-bar"));
+installBottomBarNav();
 startClock(document.getElementById("clock-time"), document.getElementById("clock-date"));
 initAudio();
 
