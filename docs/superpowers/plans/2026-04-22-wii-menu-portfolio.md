@@ -495,14 +495,24 @@ Create `styles/channel.css`:
 
 .channel--active {
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255,255,255,0.8);
+  /* Layered shadow: outer halo + subtle outline + inner highlight + bottom edge.
+     Mirrors the Wii's plastic-lozenge depth. */
+  box-shadow:
+    0 0 0 1px rgba(22, 36, 44, 0.12),
+    0 1px 2px 0 rgba(22, 36, 44, 0.16),
+    0 4px 8px -4px rgba(22, 36, 44, 0.20),
+    inset 0 -3px 0.75px 0 rgba(22, 36, 44, 0.06),
+    inset 0 1px 0.75px 0 rgba(255, 255, 255, 0.5);
   transition: transform 150ms ease-out, box-shadow 150ms ease-out;
 }
 
 .channel--active:hover,
 .channel--active:focus-visible {
   transform: translateY(-2px) scale(1.03);
-  box-shadow: 0 8px 20px rgba(0, 100, 200, 0.25), inset 0 1px 0 rgba(255,255,255,0.8);
+  box-shadow:
+    0 0 0 1px rgba(80, 150, 220, 0.6),
+    0 8px 20px -2px rgba(0, 100, 200, 0.25),
+    inset 0 1px 0.75px 0 rgba(255, 255, 255, 0.7);
   outline: none;
 }
 
@@ -534,7 +544,34 @@ Create `styles/channel.css`:
   background:
     radial-gradient(circle at 30% 30%, rgba(255,255,255,0.6), transparent 60%),
     #dedede;
-  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06);
+  box-shadow:
+    inset 0 0 0 1px rgba(0,0,0,0.06),
+    inset 0 -2px 0 0 rgba(0,0,0,0.04);
+}
+
+/* Startup fade-in: channels slide in from the right, staggered. */
+@keyframes channel-intro {
+  from { opacity: 0; transform: translateX(60px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+#channels .channel {
+  animation: channel-intro 600ms cubic-bezier(0.2, 0.9, 0.3, 1) both;
+}
+#channels .channel:nth-child(1) { animation-delay: 0.00s; }
+#channels .channel:nth-child(2) { animation-delay: 0.04s; }
+#channels .channel:nth-child(3) { animation-delay: 0.08s; }
+#channels .channel:nth-child(4) { animation-delay: 0.12s; }
+#channels .channel:nth-child(5) { animation-delay: 0.16s; }
+#channels .channel:nth-child(6) { animation-delay: 0.20s; }
+#channels .channel:nth-child(7) { animation-delay: 0.24s; }
+#channels .channel:nth-child(8) { animation-delay: 0.28s; }
+#channels .channel:nth-child(9) { animation-delay: 0.32s; }
+#channels .channel:nth-child(10){ animation-delay: 0.36s; }
+#channels .channel:nth-child(11){ animation-delay: 0.40s; }
+#channels .channel:nth-child(12){ animation-delay: 0.44s; }
+
+@media (prefers-reduced-motion: reduce) {
+  #channels .channel { animation: none; }
 }
 
 .channel--empty .channel__watermark {
@@ -777,6 +814,17 @@ Create `styles/bottom-bar.css`:
   margin-top: 4px;
   font-size: 16px;
   color: #aaa;
+}
+
+/* Startup: bottom bar slides up on load. */
+@keyframes bar-intro {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+#bottom-bar { animation: bar-intro 700ms cubic-bezier(0.2, 0.9, 0.3, 1) both; animation-delay: 0.1s; }
+
+@media (prefers-reduced-motion: reduce) {
+  #bottom-bar { animation: none; }
 }
 ```
 
@@ -2205,7 +2253,65 @@ git commit -m "feat: prefers-reduced-motion fallback for zoom transitions"
 
 ---
 
-### Task 22: Favicon and page title polish
+### Task 22: Optional CRT scanline overlay
+
+**Files:**
+- Modify: `styles/main.css`
+
+- [ ] **Step 1: Add CRT overlay styles**
+
+Append to `styles/main.css`:
+
+```css
+/* Subtle CRT scanline + vignette overlay for retro authenticity. */
+#stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.035) 0,
+      rgba(0, 0, 0, 0.035) 1px,
+      transparent 1px,
+      transparent 3px
+    ),
+    radial-gradient(ellipse at center, transparent 60%, rgba(0, 0, 0, 0.08) 100%);
+  mix-blend-mode: multiply;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #stage::before { display: none; }
+}
+```
+
+- [ ] **Step 2: Verify it reads as subtle, not overwhelming**
+
+```bash
+python3 -m http.server 8000 &
+SERVER_PID=$!
+sleep 1
+B=~/.claude/skills/gstack/browse/dist/browse
+$B goto http://localhost:8000
+$B viewport 1920x1080
+$B screenshot /tmp/task22-crt.png
+kill $SERVER_PID
+```
+
+Read the screenshot. Expected: Channels and bottom bar are still clearly readable; there's a faint horizontal-stripe texture and a very subtle darkening at the corners. If it's too strong, reduce the alpha values from `0.035`/`0.08` toward `0.02`/`0.05`.
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add -A
+git commit -m "feat: optional CRT scanline overlay for retro polish"
+```
+
+---
+
+### Task 23: Favicon and page title polish
 
 **Files:**
 - Create: `assets/favicon.svg`
@@ -2253,7 +2359,7 @@ git commit -m "chore: favicon"
 
 ---
 
-### Task 23: End-to-end smoke test (round-trip every channel)
+### Task 24: End-to-end smoke test (round-trip every channel)
 
 **Files:** none (verification only)
 
@@ -2320,7 +2426,7 @@ If QA surfaced bugs, fix them inline and commit. Otherwise no commit needed.
 
 ---
 
-### Task 24: Deploy to Vercel
+### Task 25: Deploy to Vercel
 
 **Files:**
 - Create: `vercel.json`
