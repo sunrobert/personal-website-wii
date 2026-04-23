@@ -67,12 +67,13 @@ export function installCursor() {
   // Only install on devices with a fine pointer (skip touch devices).
   if (!window.matchMedia("(pointer: fine)").matches) return;
 
-  // Hide native cursor everywhere inside the menu.
+  // Hide the native cursor on every element, including hover states for
+  // buttons and links. `*` + `*:hover` + `*::before/::after` covers text,
+  // pseudo-elements, and anything with a UA-default cursor (e.g. `pointer`).
   const style = document.createElement("style");
   style.textContent = `
-    html, body, #stage, .channel, .bb-btn, .wii-menu-btn, a, button, .mute-btn {
-      cursor: none !important;
-    }
+    *, *::before, *::after { cursor: none !important; }
+    *:hover, *:focus, *:active { cursor: none !important; }
   `;
   document.head.appendChild(style);
 

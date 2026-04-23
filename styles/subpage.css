@@ -2,13 +2,16 @@ body.subpage {
   background: var(--menu-bg);
 }
 
+body.subpage #letterbox {
+  height: 100vh;
+}
+
 .subpage-stage {
   width: 1280px;
   height: 720px;
-  margin: 0 auto;
   position: relative;
   background: var(--menu-bg);
-  padding: 40px 60px 120px;
+  padding: 40px 60px 80px;
   transform-origin: center center;
 }
 

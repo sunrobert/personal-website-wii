@@ -3,32 +3,157 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Social Links</title>
+  <title>Social Profiles</title>
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
-  <link rel="stylesheet" href="styles/main.css" />
-  <link rel="stylesheet" href="styles/subpage.css" />
+  <link rel="stylesheet" href="styles/main.css?v=1776986957" />
+  <link rel="stylesheet" href="styles/subpage.css?v=1776986957" />
+  <style>
+    .social-panel {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      padding: 48px 24px;
+    }
+    .social-header { text-align: center; }
+    .social-heading {
+      font-size: 56px;
+      font-weight: 800;
+      color: #2a2e35;
+      letter-spacing: -0.01em;
+    }
+    .social-sub {
+      margin-top: 8px;
+      font-size: 20px;
+      color: #6b707a;
+      position: relative;
+      padding-top: 14px;
+    }
+    .social-sub::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 160px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #5fa8e6, transparent);
+    }
+    .social-grid {
+      display: flex;
+      gap: 80px;
+      align-items: center;
+      justify-content: center;
+      margin-top: 40px;
+      flex-wrap: wrap;
+    }
+    .social-tile {
+      width: 160px;
+      height: 160px;
+      border-radius: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow:
+        0 4px 10px rgba(0, 0, 0, 0.15),
+        0 12px 24px -8px rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+      transition: transform 220ms cubic-bezier(0.2, 0.9, 0.3, 1), box-shadow 220ms ease-out;
+      text-decoration: none;
+      position: relative;
+      overflow: hidden;
+    }
+    .social-tile::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,0.35) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .social-tile:hover,
+    .social-tile:focus-visible {
+      transform: translateY(-10px) scale(1.1);
+      box-shadow:
+        0 8px 18px rgba(0, 0, 0, 0.22),
+        0 24px 40px -8px rgba(0, 0, 0, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+      outline: none;
+    }
+    .social-tile svg {
+      width: 60%;
+      height: 60%;
+      color: #fff;
+      z-index: 1;
+    }
+    .social-label {
+      margin-top: 14px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #2a2e35;
+      text-align: center;
+      letter-spacing: 0.01em;
+    }
+    .social-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .tile--twitter  { background: linear-gradient(180deg, #1da1f2 0%, #0a7cc9 100%); }
+    .tile--linkedin { background: linear-gradient(180deg, #2a86c0 0%, #0a66c2 100%); }
+    .tile--github   { background: linear-gradient(180deg, #3a3f47 0%, #1a1d22 100%); }
+    .tile--substack { background: linear-gradient(180deg, #ff8a4c 0%, #ff6719 100%); }
+  </style>
 </head>
 <body class="subpage">
   <div id="letterbox">
     <div class="subpage-stage">
       <div id="flash-overlay"></div>
-      <header class="subpage-header">
-        <img class="subpage-icon" src="assets/channels/social.png" alt="" />
-        <h1 class="subpage-title">Social Links</h1>
-      </header>
-      <section class="subpage-panel">
-        <ul class="social-list">
-          <li><a href="https://twitter.com/yourhandle" target="_blank" rel="noopener">Twitter / X</a></li>
-          <li><a href="https://github.com/yourhandle" target="_blank" rel="noopener">GitHub</a></li>
-          <li><a href="https://www.linkedin.com/in/yourhandle" target="_blank" rel="noopener">LinkedIn</a></li>
-          <li><a href="mailto:you@example.com">Email</a></li>
-        </ul>
-      </section>
+      <div class="social-panel">
+        <div class="social-header">
+          <div class="social-heading">Social Profiles</div>
+          <div class="social-sub">Connect with me on these platforms</div>
+        </div>
+        <div class="social-grid">
+          <div class="social-item">
+            <a class="social-tile tile--twitter" href="https://twitter.com/yourhandle" target="_blank" rel="noopener" aria-label="Twitter / X">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24h-6.66l-5.214-6.817-5.966 6.817H1.676l7.73-8.835L1.25 2.25h6.827l4.713 6.231 5.454-6.231zm-1.16 17.52h1.833L7.084 4.126H5.117L17.084 19.77z"/>
+              </svg>
+            </a>
+            <div class="social-label">Twitter / X</div>
+          </div>
+          <div class="social-item">
+            <a class="social-tile tile--linkedin" href="https://www.linkedin.com/in/yourhandle" target="_blank" rel="noopener" aria-label="LinkedIn">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.36V9h3.41v1.56h.05c.48-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/>
+              </svg>
+            </a>
+            <div class="social-label">LinkedIn</div>
+          </div>
+          <div class="social-item">
+            <a class="social-tile tile--github" href="https://github.com/yourhandle" target="_blank" rel="noopener" aria-label="GitHub">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.78-.25.78-.55v-2.01c-3.2.7-3.87-1.35-3.87-1.35-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.25.45-2.28 1.18-3.08-.12-.29-.51-1.46.11-3.04 0 0 .97-.31 3.18 1.18a11.05 11.05 0 0 1 5.8 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.58.24 2.75.12 3.04.74.8 1.18 1.83 1.18 3.08 0 4.41-2.7 5.38-5.26 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.2.66.79.55A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/>
+              </svg>
+            </a>
+            <div class="social-label">GitHub</div>
+          </div>
+          <div class="social-item">
+            <a class="social-tile tile--substack" href="https://substack.com/@yourhandle" target="_blank" rel="noopener" aria-label="Substack">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z"/>
+              </svg>
+            </a>
+            <div class="social-label">Substack</div>
+          </div>
+        </div>
+      </div>
       <button class="wii-menu-btn" data-channel-id="social">Wii Menu</button>
     </div>
   </div>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/howler@2.2.4/dist/howler.min.js"></script>
-  <script type="module" src="scripts/subpage.js"></script>
+  <script type="module" src="scripts/subpage.js?v=1776986957"></script>
 </body>
 </html>

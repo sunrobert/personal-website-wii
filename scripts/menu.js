@@ -44,3 +44,14 @@ if (returnId) {
 } else {
   grid.querySelector(".channel--active")?.focus();
 }
+
+// Restoring from bfcache after a browser back/forward can leave the grid in the
+// mid-zoom state (tiles at opacity 0, flash at 1, preview overlay still present).
+// Reset everything so the menu is immediately usable.
+window.addEventListener("pageshow", (e) => {
+  if (!e.persisted) return;
+  document.getElementById("channel-preview")?.remove();
+  const flash = document.getElementById("flash-overlay");
+  if (flash) gsap.set(flash, { opacity: 0 });
+  gsap.set(grid.querySelectorAll(".channel"), { x: 0, y: 0, scale: 1, opacity: 1, clearProps: "transform" });
+});
