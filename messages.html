@@ -3,58 +3,184 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Wii Message Board</title>
+  <title>Contact</title>
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
   <link rel="stylesheet" href="styles/main.css" />
   <link rel="stylesheet" href="styles/subpage.css" />
   <style>
-    .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
-    .msg-day {
-      aspect-ratio: 1; background: #fafafa; border: 1px solid #eee; border-radius: 6px;
-      padding: 6px; font-size: 11px; color: #888; position: relative;
+    body.subpage { background: var(--menu-bg); overflow-y: auto; }
+    .contact-stage {
+      min-height: 100vh;
+      padding: 32px 48px 60px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
     }
-    .msg-day.has-msg { background: #fff4d4; border-color: #e9d07a; }
-    .msg-day .dot { position: absolute; bottom: 4px; right: 4px; font-size: 14px; }
-    .message-feed { margin-top: 20px; }
-    .message-feed article {
-      padding: 14px 16px; background: #fffdf2; border: 1px solid #f0e3a8;
-      border-radius: 10px; margin-bottom: 10px;
+    .contact-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
     }
-    .message-feed h3 { font-size: 15px; margin: 0 0 6px; color: #6a5a1a; }
-    .message-feed p { font-size: 14px; color: #555; line-height: 1.4; }
+    .back-pill.wii-menu-btn {
+      position: static;
+      left: auto;
+      bottom: auto;
+      transform: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 22px 10px 16px;
+      border-radius: 999px;
+      background: #fff;
+      border: 2px solid rgba(120, 180, 230, 0.7);
+      font: inherit;
+      font-size: 18px;
+      font-weight: 600;
+      color: #3a3a3a;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      transition: transform 150ms ease-out, box-shadow 150ms ease-out, border-color 150ms ease-out;
+    }
+    .back-pill.wii-menu-btn:hover, .back-pill.wii-menu-btn:focus-visible {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(80, 150, 220, 0.25);
+      border-color: rgba(80, 150, 220, 0.9);
+      outline: none;
+    }
+    .back-pill .chev { font-size: 18px; color: #6fb6ff; line-height: 1; }
+    .contact-clock {
+      padding: 8px 18px;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid rgba(0,0,0,0.06);
+      font-family: "DSEG7", "Courier New", monospace;
+      font-size: 16px;
+      color: #555;
+      letter-spacing: 0.05em;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .contact-hero {
+      text-align: center;
+      margin: 40px 0 80px;
+    }
+    .contact-hero h1 {
+      font-size: 92px;
+      font-weight: 800;
+      color: #2a2a2a;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+      line-height: 1;
+    }
+    .contact-hero .rule {
+      width: 280px;
+      height: 2px;
+      margin: 16px auto 14px;
+      background: linear-gradient(90deg, transparent, #8fcff0, transparent);
+    }
+    .contact-hero p {
+      font-size: 22px;
+      color: #7a7a7a;
+      font-weight: 400;
+    }
+    .contact-panel {
+      background: #fff;
+      border: 1px solid rgba(0,0,0,0.08);
+      border-radius: 24px;
+      padding: 56px 60px 48px;
+      max-width: 860px;
+      width: 100%;
+      margin: 0 auto;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    }
+    .contact-panel h2 {
+      font-size: 42px;
+      font-weight: 700;
+      color: #2a2a2a;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #eee;
+      margin-bottom: 28px;
+    }
+    .contact-panel .lead {
+      font-size: 18px;
+      color: #3a3a3a;
+      margin-bottom: 8px;
+    }
+    .contact-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 18px;
+      padding: 18px 0;
+      border-top: 1px solid #f0f0f0;
+      margin-top: 20px;
+    }
+    .contact-row .icon {
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: #6fb6ff;
+      font-size: 30px;
+    }
+    .contact-row .body h3 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #222;
+      margin: 0 0 4px;
+    }
+    .contact-row .body a {
+      font-size: 18px;
+      color: #6a6a6a;
+      text-decoration: none;
+    }
+    .contact-row .body a:hover { color: #3a8fd0; }
   </style>
 </head>
 <body class="subpage">
-  <div id="letterbox">
-    <div class="subpage-stage">
-      <div id="flash-overlay"></div>
-      <header class="subpage-header">
-        <div class="subpage-icon" style="background:#fff; display:flex; align-items:center; justify-content:center; font-size:44px;">✉</div>
-        <h1 class="subpage-title">Wii Message Board</h1>
-      </header>
-      <section class="subpage-panel">
-        <div class="calendar-grid" id="calendar"></div>
-        <div class="message-feed">
-          <article><h3>Welcome</h3><p>This is the Wii Message Board. Announcements, updates, and milestones show up here.</p></article>
-          <article><h3>Site launched</h3><p>This Wii-menu portfolio went live. Thanks for stopping by.</p></article>
+  <div class="contact-stage">
+    <div id="flash-overlay"></div>
+    <div class="contact-topbar">
+      <button class="back-pill wii-menu-btn" data-channel-id="__envelope" aria-label="Back to menu">
+        <span class="chev">&#10216;</span> Back
+      </button>
+      <div class="contact-clock" id="contact-clock">—</div>
+    </div>
+
+    <div class="contact-hero">
+      <h1>Contact</h1>
+      <div class="rule"></div>
+      <p>Get in touch with me</p>
+    </div>
+
+    <div class="contact-panel">
+      <h2>Let's Connect</h2>
+      <p class="lead">Feel free to reach out through any of these channels:</p>
+
+      <div class="contact-row">
+        <div class="icon">&#9993;</div>
+        <div class="body">
+          <h3>Email</h3>
+          <a href="mailto:hello@example.com">hello@example.com</a>
         </div>
-      </section>
-      <button class="wii-menu-btn" data-channel-id="__envelope">Wii Menu</button>
+      </div>
     </div>
   </div>
+
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/howler@2.2.4/dist/howler.min.js"></script>
   <script type="module" src="scripts/subpage.js"></script>
   <script type="module">
-    const grid = document.getElementById("calendar");
-    const today = new Date();
-    const markedDay = today.getDay();
-    for (let i = 0; i < 28; i++) {
-      const d = document.createElement("div");
-      d.className = "msg-day" + (i % 7 === markedDay && i < 7 ? " has-msg" : "");
-      d.innerHTML = `<span>${i + 1}</span>${i % 7 === markedDay && i < 7 ? '<span class="dot">✉</span>' : ""}`;
-      grid.appendChild(d);
-    }
+    import { formatTime, formatDate } from "./scripts/clock.js";
+    const el = document.getElementById("contact-clock");
+    const tick = () => {
+      const d = new Date();
+      const { hhmm, ampm } = formatTime(d);
+      el.textContent = `${formatDate(d)} ${hhmm} ${ampm}`;
+    };
+    tick();
+    setInterval(tick, 30_000);
   </script>
 </body>
 </html>

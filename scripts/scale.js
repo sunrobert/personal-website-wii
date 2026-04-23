@@ -12,8 +12,8 @@ export function computeFillScale(viewportW, viewportH) {
 }
 
 export function applyScale(stageEl) {
-  const { sx, sy } = computeFillScale(window.innerWidth, window.innerHeight);
-  stageEl.style.transform = `scale(${sx}, ${sy})`;
+  const scale = computeScale(window.innerWidth, window.innerHeight);
+  stageEl.style.transform = `scale(${scale})`;
 }
 
 export function installScaler(stageEl) {
