@@ -31,15 +31,17 @@ export function renderBottomBar(container) {
 }
 
 export function installBottomBarNav() {
-  const envelope = document.querySelector(".bb-btn--envelope");
-  envelope?.addEventListener("click", async () => {
+  const flashTo = async (href) => {
     const { playSelect } = await import("./audio.js");
     playSelect();
     const flash = document.getElementById("flash-overlay");
     gsap.to(flash, {
       opacity: 1,
       duration: 0.2,
-      onComplete: () => { window.location.href = "messages.html"; },
+      onComplete: () => { window.location.href = href; },
     });
-  });
+  };
+
+  document.querySelector(".bb-btn--envelope")?.addEventListener("click", () => flashTo("messages.html"));
+  document.querySelector(".bb-btn--avatar")?.addEventListener("click", () => flashTo("about.html"));
 }
