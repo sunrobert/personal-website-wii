@@ -5,18 +5,199 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Photography</title>
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
-  <link rel="stylesheet" href="styles/main.css?v=1776990387" />
-  <link rel="stylesheet" href="styles/subpage.css?v=1776990387" />
+  <link rel="stylesheet" href="styles/main.css?v=1778530610" />
+  <link rel="stylesheet" href="styles/subpage.css?v=1778530610" />
   <style>
-    .photo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-    .photo {
-      aspect-ratio: 4 / 3;
-      background: linear-gradient(135deg,#eee,#ccc);
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.12);
-      display: flex; align-items: center; justify-content: center;
-      color: #888; font-size: 14px;
+    .subpage-panel { padding: 20px; }
+    .project-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px 14px;
     }
+    .project-card {
+      cursor: pointer;
+      border: none;
+      padding: 0;
+      background: transparent;
+      text-align: left;
+      font: inherit;
+      color: inherit;
+    }
+    .project-thumb {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      border-radius: 8px;
+      overflow: hidden;
+      background: linear-gradient(135deg,#dde3ec,#b8c2cf);
+      box-shadow:
+        0 1px 3px rgba(0,0,0,0.10),
+        0 6px 14px -6px rgba(0,0,0,0.18);
+      position: relative;
+      transition: transform 200ms cubic-bezier(0.2, 0.9, 0.3, 1), box-shadow 200ms ease-out;
+    }
+    .project-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .project-thumb::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, transparent 55%, rgba(0,0,0,0.35) 100%);
+      pointer-events: none;
+    }
+    .project-thumb .count-pill {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: rgba(255,255,255,0.92);
+      color: #333;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 999px;
+      letter-spacing: 0.04em;
+    }
+    .project-card:hover .project-thumb,
+    .project-card:focus-visible .project-thumb {
+      transform: translateY(-3px);
+      box-shadow:
+        0 4px 10px rgba(0,0,0,0.18),
+        0 16px 30px -8px rgba(0,0,0,0.25);
+      outline: none;
+    }
+    .project-meta { margin-top: 8px; padding: 0 2px; }
+    .project-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #2a2e35;
+      line-height: 1.25;
+    }
+    .project-sub {
+      font-size: 11px;
+      color: #8a8f97;
+      margin-top: 2px;
+    }
+    .project-thumb.empty {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #8a8f97;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    /* Slideshow overlay */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.92);
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 250ms ease-out;
+    }
+    .lightbox.open {
+      display: flex;
+      opacity: 1;
+    }
+    .lightbox-stage {
+      width: min(92vw, 1400px);
+      height: min(86vh, 900px);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .lightbox-img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: 6px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      transition: opacity 400ms ease-out;
+    }
+    .lightbox-img.swap { opacity: 0; }
+    .lightbox-empty {
+      color: #c8c8c8;
+      font-size: 18px;
+      text-align: center;
+      padding: 40px;
+    }
+    .lightbox-empty .hint {
+      font-size: 13px;
+      color: #888;
+      margin-top: 10px;
+      font-family: ui-monospace, Menlo, monospace;
+    }
+    .lightbox-top {
+      position: absolute;
+      top: 24px;
+      left: 24px;
+      right: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #fff;
+      pointer-events: none;
+    }
+    .lightbox-title {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.5);
+    }
+    .lightbox-counter {
+      font-size: 13px;
+      color: #c8c8c8;
+      font-family: ui-monospace, Menlo, monospace;
+    }
+    .lightbox-close, .lightbox-nav {
+      pointer-events: auto;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: #fff;
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 18px;
+      transition: background 150ms, transform 150ms;
+    }
+    .lightbox-close:hover, .lightbox-nav:hover {
+      background: rgba(255,255,255,0.25);
+      transform: scale(1.05);
+    }
+    .lightbox-close { position: absolute; top: 20px; right: 24px; z-index: 2; }
+    .lightbox-nav.prev { position: absolute; left: 24px; top: 50%; transform: translateY(-50%); }
+    .lightbox-nav.next { position: absolute; right: 24px; top: 50%; transform: translateY(-50%); }
+    .lightbox-nav.prev:hover { transform: translateY(-50%) scale(1.05); }
+    .lightbox-nav.next:hover { transform: translateY(-50%) scale(1.05); }
+    .lightbox-progress {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 6px;
+    }
+    .lightbox-progress .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.3);
+      transition: background 200ms;
+    }
+    .lightbox-progress .dot.active { background: #fff; }
   </style>
 </head>
 <body class="subpage">
@@ -28,20 +209,156 @@
         <h1 class="subpage-title">Photography</h1>
       </header>
       <section class="subpage-panel">
-        <div class="photo-grid">
-          <div class="photo">Photo 1</div>
-          <div class="photo">Photo 2</div>
-          <div class="photo">Photo 3</div>
-          <div class="photo">Photo 4</div>
-          <div class="photo">Photo 5</div>
-          <div class="photo">Photo 6</div>
-        </div>
+        <div class="project-grid" id="project-grid"></div>
       </section>
       <button class="wii-menu-btn" data-channel-id="photography">Wii Menu</button>
     </div>
   </div>
+
+  <!-- Slideshow overlay -->
+  <div class="lightbox" id="lightbox" aria-hidden="true">
+    <button class="lightbox-close" id="lb-close" aria-label="Close">&times;</button>
+    <div class="lightbox-top">
+      <div class="lightbox-title" id="lb-title"></div>
+      <div class="lightbox-counter" id="lb-counter"></div>
+    </div>
+    <button class="lightbox-nav prev" id="lb-prev" aria-label="Previous">&#10216;</button>
+    <div class="lightbox-stage" id="lb-stage"></div>
+    <button class="lightbox-nav next" id="lb-next" aria-label="Next">&#10217;</button>
+    <div class="lightbox-progress" id="lb-progress"></div>
+  </div>
+
+  <script>
+    // ------------------------------------------------------------------
+    // Photography projects. To add photos for a project:
+    //   1. Drop files into assets/photography/<slug>/
+    //   2. List the filenames (in display order) in the `images` array.
+    //   3. Set `thumb` to the file you want as the cover tile (a path or
+    //      one of the filenames inside the project folder).
+    // ------------------------------------------------------------------
+    const PROJECTS = [
+      { slug: "yonghe-temple",              title: "Yonghe Temple, Beijing '24",       thumb: "", images: [] },
+      { slug: "nights-in-nyc",              title: "Nights in NYC",                    thumb: "", images: [] },
+      { slug: "rule-of-ones",               title: "Rule of Ones, Twos, & Threes",     thumb: "", images: [] },
+      { slug: "people-of-hong-kong",        title: "People of Hong Kong '24",          thumb: "", images: [] },
+      { slug: "central-park",               title: "Central Park, NYC",                thumb: "", images: [] },
+      { slug: "classic-cars-nyc",           title: "Classic Cars NYC",                 thumb: "", images: [] },
+      { slug: "school",                     title: "School",                           thumb: "", images: [] },
+      { slug: "nights-in-china",            title: "Nights in China '24",              thumb: "", images: [] },
+      { slug: "vancouver-summer",           title: "Vancouver Summer '24",             thumb: "", images: [] },
+      { slug: "israeli-palestine-protest",  title: "Israeli & Palestine Protest 2023", thumb: "", images: [] },
+      { slug: "sunny-days-vancouver",       title: "Sunny Days in Vancouver",          thumb: "", images: [] },
+    ];
+
+    const resolvePath = (project, file) => {
+      if (!file) return "";
+      if (file.startsWith("assets/") || file.startsWith("/") || file.startsWith("http")) return file;
+      return `assets/photography/${project.slug}/${file}`;
+    };
+
+    // --- Render the project grid -------------------------------------
+    const grid = document.getElementById("project-grid");
+    grid.innerHTML = PROJECTS.map((p) => {
+      const thumb = p.thumb ? resolvePath(p, p.thumb) : (p.images[0] ? resolvePath(p, p.images[0]) : "");
+      const count = p.images.length;
+      return `
+        <button class="project-card" data-slug="${p.slug}" aria-label="Open ${p.title}">
+          <div class="project-thumb ${thumb ? "" : "empty"}">
+            ${thumb ? `<img src="${thumb}" alt="${p.title}" loading="lazy" />` : `<span>No photos yet</span>`}
+            ${count > 0 ? `<span class="count-pill">${count} photo${count === 1 ? "" : "s"}</span>` : ""}
+          </div>
+          <div class="project-meta">
+            <div class="project-title">${p.title}</div>
+            <div class="project-sub">${count > 0 ? `${count} photo${count === 1 ? "" : "s"}` : "Coming soon"}</div>
+          </div>
+        </button>`;
+    }).join("");
+
+    // --- Slideshow / lightbox ---------------------------------------
+    const lb        = document.getElementById("lightbox");
+    const lbStage   = document.getElementById("lb-stage");
+    const lbTitle   = document.getElementById("lb-title");
+    const lbCounter = document.getElementById("lb-counter");
+    const lbProgress= document.getElementById("lb-progress");
+    const lbClose   = document.getElementById("lb-close");
+    const lbPrev    = document.getElementById("lb-prev");
+    const lbNext    = document.getElementById("lb-next");
+
+    const SLIDE_MS = 4000;
+    let current = { project: null, index: 0, timer: null };
+
+    function openProject(slug) {
+      const project = PROJECTS.find((p) => p.slug === slug);
+      if (!project) return;
+      current.project = project;
+      current.index = 0;
+      lbTitle.textContent = project.title;
+      lb.classList.add("open");
+      lb.setAttribute("aria-hidden", "false");
+      renderSlide();
+      startTimer();
+    }
+    function closeLightbox() {
+      lb.classList.remove("open");
+      lb.setAttribute("aria-hidden", "true");
+      stopTimer();
+      lbStage.innerHTML = "";
+    }
+    function renderSlide() {
+      const { project, index } = current;
+      const imgs = project.images;
+      if (!imgs.length) {
+        lbStage.innerHTML = `
+          <div class="lightbox-empty">
+            No photos in this project yet.
+            <div class="hint">Drop images into <code>assets/photography/${project.slug}/</code><br/>
+            then list them in <code>photography.html</code> &rarr; <code>PROJECTS</code>.</div>
+          </div>`;
+        lbCounter.textContent = "";
+        lbProgress.innerHTML = "";
+        return;
+      }
+      const src = resolvePath(project, imgs[index]);
+      lbStage.innerHTML = `<img class="lightbox-img" src="${src}" alt="${project.title} – ${index + 1}" />`;
+      lbCounter.textContent = `${index + 1} / ${imgs.length}`;
+      lbProgress.innerHTML = imgs.map((_, i) => `<span class="dot ${i === index ? "active" : ""}"></span>`).join("");
+    }
+    function startTimer() {
+      stopTimer();
+      if (!current.project || current.project.images.length < 2) return;
+      current.timer = setInterval(() => advance(1), SLIDE_MS);
+    }
+    function stopTimer() {
+      if (current.timer) { clearInterval(current.timer); current.timer = null; }
+    }
+    function advance(delta) {
+      if (!current.project) return;
+      const n = current.project.images.length;
+      if (!n) return;
+      current.index = (current.index + delta + n) % n;
+      renderSlide();
+    }
+
+    // Wire events
+    grid.addEventListener("click", (e) => {
+      const card = e.target.closest(".project-card");
+      if (!card) return;
+      openProject(card.dataset.slug);
+    });
+    lbClose.addEventListener("click", closeLightbox);
+    lbPrev.addEventListener("click", () => { advance(-1); startTimer(); });
+    lbNext.addEventListener("click", () => { advance(1);  startTimer(); });
+    lb.addEventListener("click", (e) => { if (e.target === lb) closeLightbox(); });
+    document.addEventListener("keydown", (e) => {
+      if (!lb.classList.contains("open")) return;
+      if (e.key === "Escape")     closeLightbox();
+      if (e.key === "ArrowRight") { advance(1);  startTimer(); }
+      if (e.key === "ArrowLeft")  { advance(-1); startTimer(); }
+    });
+  </script>
+
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/howler@2.2.4/dist/howler.min.js"></script>
-  <script type="module" src="scripts/subpage.js?v=1776990387"></script>
+  <script type="module" src="scripts/subpage.js?v=1778530610"></script>
 </body>
 </html>

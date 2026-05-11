@@ -15,6 +15,7 @@ export function initAudio() {
   bgm = new Howl({
     src: ["assets/audio/bgm.mp3"],
     loop: true,
+    html5: true,
     volume: 0,
     onloaderror: (_, err) => console.warn("BGM load failed", err),
   });

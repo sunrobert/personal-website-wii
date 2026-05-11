@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>About Me</title>
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
-  <link rel="stylesheet" href="styles/main.css?v=1776990387" />
-  <link rel="stylesheet" href="styles/subpage.css?v=1776990387" />
+  <link rel="stylesheet" href="styles/main.css?v=1778530610" />
+  <link rel="stylesheet" href="styles/subpage.css?v=1778530610" />
   <style>
     body.subpage { background: var(--menu-bg); overflow-y: auto; }
     .about-stage {
@@ -131,6 +131,18 @@
       color: #3a3a3a;
       margin-bottom: 16px;
     }
+    .about-panel a {
+      color: #2a86c0;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(42, 134, 192, 0.35);
+      transition: color 150ms ease-out, border-color 150ms ease-out;
+    }
+    .about-panel a:hover,
+    .about-panel a:focus-visible {
+      color: #0a66c2;
+      border-bottom-color: #0a66c2;
+      outline: none;
+    }
     .about-facts {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -195,13 +207,31 @@
     <div class="about-panel">
       <h2>Hi, I'm Robert</h2>
       <p>
-        Welcome to my corner of the internet. I'm building software, writing,
-        and occasionally angel investing in early-stage startups I believe in.
+        I'm a 21-year-old currently living in Atlanta. I was born in Canada
+        but spent most of my life moving between China, the U.S., and Canada.
       </p>
       <p>
-        This little site is a tribute to the Wii Main Menu — the interface
-        that got me excited about interactive design as a kid. Poke around,
-        pick a channel, see what you find.
+        Currently, I'm part of the
+        <a href="https://www.base.org/" target="_blank" rel="noopener">Base</a>
+        UXR Operations team at
+        <a href="https://www.coinbase.com" target="_blank" rel="noopener">Coinbase</a>
+        (NASDAQ: COIN), supporting research initiatives that help make crypto
+        trusted and easy to use.
+      </p>
+      <p>
+        Beyond work, I run
+        <a href="https://www.blockchainatemory.com/" target="_blank" rel="noopener"><strong>Blockchain at Emory</strong></a>,
+        a student-led organization of 50+ members exploring blockchain
+        technology and its applications. I also serve as a Board Member at the
+        <a href="https://www.thebaf.org/" target="_blank" rel="noopener"><strong>Blockchain Acceleration Foundation</strong></a>,
+        a 501(c)(3) nonprofit dedicated to advancing the growth of a
+        user-owned internet.
+      </p>
+      <p>
+        Previously, I worked at
+        <a href="https://www.bitmind.ai/" target="_blank" rel="noopener"><strong>Bitmind</strong></a>,
+        where I focused on decentralized AI and the Bittensor ecosystem,
+        helping build open, community-driven AI infrastructure.
       </p>
 
       <div class="about-facts">
@@ -209,28 +239,28 @@
           <div class="icon">&#128205;</div>
           <div>
             <h3>Based in</h3>
-            <div class="value">San Francisco, CA</div>
+            <div class="value">Vancouver · NYC · ATL</div>
           </div>
         </div>
         <div class="fact">
-          <div class="icon">&#128187;</div>
+          <div class="icon">&#128188;</div>
           <div>
             <h3>Currently</h3>
-            <div class="value">Building & investing</div>
+            <div class="value">Base UXR Ops @ Coinbase</div>
           </div>
         </div>
         <div class="fact">
-          <div class="icon">&#128218;</div>
+          <div class="icon">&#127891;</div>
           <div>
-            <h3>Reading</h3>
-            <div class="value">The Dispossessed</div>
+            <h3>Leading</h3>
+            <div class="value">Blockchain at Emory</div>
           </div>
         </div>
         <div class="fact">
-          <div class="icon">&#127916;</div>
+          <div class="icon">&#127760;</div>
           <div>
-            <h3>Watching</h3>
-            <div class="value">Anything Miyazaki</div>
+            <h3>Board Member</h3>
+            <div class="value">Blockchain Acceleration Foundation</div>
           </div>
         </div>
       </div>
@@ -239,7 +269,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/howler@2.2.4/dist/howler.min.js"></script>
-  <script type="module" src="scripts/subpage.js?v=1776990387"></script>
+  <script type="module" src="scripts/subpage.js?v=1778530610"></script>
   <script type="module">
     import { formatTime, formatDate } from "./scripts/clock.js";
     const root = document.getElementById("about-clock");

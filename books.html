@@ -5,22 +5,69 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Books</title>
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
-  <link rel="stylesheet" href="styles/main.css?v=1776990387" />
-  <link rel="stylesheet" href="styles/subpage.css?v=1776990387" />
+  <link rel="stylesheet" href="styles/main.css?v=1778530610" />
+  <link rel="stylesheet" href="styles/subpage.css?v=1778530610" />
   <style>
-    .book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 20px; }
-    .book { text-align: center; }
-    .book-cover {
-      width: 100%;
-      aspect-ratio: 2 / 3;
-      background: linear-gradient(180deg,#f0d79a,#d9a964);
-      border-radius: 6px;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.15);
-      display: flex; align-items: center; justify-content: center;
-      color: #fff; font-weight: 700; padding: 8px; font-size: 14px;
+    .subpage-panel {
+      background: transparent;
+      box-shadow: none;
+      padding: 0;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    .book h3 { margin: 8px 0 2px; font-size: 14px; }
-    .book .author { color: #888; font-size: 12px; }
+    .carousel {
+      width: 100%;
+      overflow: hidden;
+      mask-image: linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%);
+      -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 6%, #000 94%, transparent 100%);
+    }
+    .carousel-track {
+      display: flex;
+      gap: 36px;
+      width: max-content;
+      animation: carousel-scroll 48s linear infinite;
+    }
+    .carousel:hover .carousel-track,
+    .carousel:focus-within .carousel-track {
+      animation-play-state: paused;
+    }
+    @keyframes carousel-scroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+    .book {
+      flex: 0 0 200px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .book-cover {
+      width: 200px;
+      aspect-ratio: 2 / 3;
+      border-radius: 4px;
+      box-shadow:
+        0 1px 2px rgba(0,0,0,0.18),
+        0 10px 22px -6px rgba(0,0,0,0.28);
+      overflow: hidden;
+      background: #1a1a1a;
+    }
+    .book-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .book h3 {
+      margin: 12px 0 2px;
+      font-size: 14px;
+      color: #2a2e35;
+      line-height: 1.25;
+      max-width: 100%;
+    }
+    .book .author { color: #8a8f97; font-size: 12px; }
   </style>
 </head>
 <body class="subpage">
@@ -32,17 +79,38 @@
         <h1 class="subpage-title">Books</h1>
       </header>
       <section class="subpage-panel">
-        <div class="book-grid">
-          <div class="book"><div class="book-cover">The Dispossessed</div><h3>The Dispossessed</h3><div class="author">Ursula K. Le Guin</div></div>
-          <div class="book"><div class="book-cover">Zero to One</div><h3>Zero to One</h3><div class="author">Peter Thiel</div></div>
-          <div class="book"><div class="book-cover">Godel, Escher, Bach</div><h3>Gödel, Escher, Bach</h3><div class="author">Douglas Hofstadter</div></div>
+        <div class="carousel" aria-label="Bookshelf carousel">
+          <div class="carousel-track" id="carousel-track">
+            <!-- Books are injected here by script (duplicated for seamless loop) -->
+          </div>
         </div>
       </section>
       <button class="wii-menu-btn" data-channel-id="books">Wii Menu</button>
     </div>
   </div>
+  <script>
+    const BOOKS = [
+      { title: "Hamlet",                                           author: "William Shakespeare",   img: "assets/books/hamlet.jpg" },
+      { title: "The Prince",                                       author: "Niccolò Machiavelli",   img: "assets/books/prince.jpg" },
+      { title: "Chip War",                                         author: "Chris Miller",          img: "assets/books/chip-war.jpg" },
+      { title: "Meditations",                                      author: "Marcus Aurelius",       img: "assets/books/meditations.jpg" },
+      { title: "Principles for Dealing with the Changing World Order", author: "Ray Dalio",         img: "assets/books/principles.jpg" },
+      { title: "Tao Te Ching",                                     author: "Lao Tzu",               img: "assets/books/tao.jpg" },
+      { title: "The Republic",                                     author: "Plato",                 img: "assets/books/republic.jpg" },
+      { title: "The Creative Act",                                 author: "Rick Rubin",            img: "assets/books/creative-act.jpg" },
+    ];
+    const track = document.getElementById("carousel-track");
+    const render = (b) => `
+      <div class="book">
+        <div class="book-cover"><img src="${b.img}" alt="${b.title}" loading="lazy" /></div>
+        <h3>${b.title}</h3>
+        <div class="author">${b.author}</div>
+      </div>`;
+    // Duplicate the list so the marquee loops seamlessly (translateX(-50%) lands exactly on second copy start)
+    track.innerHTML = [...BOOKS, ...BOOKS].map(render).join("");
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/howler@2.2.4/dist/howler.min.js"></script>
-  <script type="module" src="scripts/subpage.js?v=1776990387"></script>
+  <script type="module" src="scripts/subpage.js?v=1778530610"></script>
 </body>
 </html>
