@@ -1,17 +1,9 @@
 // Wii-style hand cursor with a subtle trailing after-image.
-// Pattern borrowed from bvvst/lukedotboo.
+// Main hand: 1:1 with the mouse.
+// Trail: per-frame lerp toward the latest cursor position — visibly trails on
+// fast moves but always catches up, so it can never "stall" behind a flick.
 
-function throttle(fn, delay) {
-  let last = 0;
-  return (...args) => {
-    const now = Date.now();
-    if (now - last < delay) return;
-    last = now;
-    return fn(...args);
-  };
-}
-
-function mountPointer({ srcIdle, srcClicked, opacity, throttleMs, zIndex, smooth }) {
+function mountSprite({ srcIdle, srcClicked, opacity, zIndex }) {
   const img = document.createElement("img");
   img.src = srcIdle;
   img.alt = "";
@@ -27,72 +19,91 @@ function mountPointer({ srcIdle, srcClicked, opacity, throttleMs, zIndex, smooth
     transform: translate3d(-9999px, -9999px, 0);
     opacity: 0;
     z-index: ${zIndex};
-    ${smooth ? "transition: transform 70ms ease-out, opacity 150ms ease-out;" : "transition: opacity 150ms ease-out;"}
+    transition: opacity 150ms ease-out;
     filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.25));
     will-change: transform;
   `;
   document.body.appendChild(img);
-
-  let clicked = false;
-  let visible = false;
-  let x = 0, y = 0;
-
-  const setTransform = () => {
-    img.style.transform = `translate3d(${x}px, ${y}px, 0)${clicked ? " scale(0.95)" : ""}`;
-  };
-
-  const baseMove = (e) => {
-    x = e.clientX;
-    y = e.clientY;
-    if (!visible) {
-      img.style.opacity = String(opacity);
-      visible = true;
-    }
-    setTransform();
-  };
-
-  const move = throttleMs > 0 ? throttle(baseMove, throttleMs) : baseMove;
-
-  const leave = () => { img.style.opacity = "0"; visible = false; };
-  const down = () => { clicked = true; img.src = srcClicked; setTransform(); };
-  const up = () => { clicked = false; img.src = srcIdle; setTransform(); };
-
-  document.addEventListener("mousemove", move);
-  document.addEventListener("mouseleave", leave);
-  document.addEventListener("mousedown", down);
-  document.addEventListener("mouseup", up);
+  return img;
 }
 
 export function installCursor() {
   // Only install on devices with a fine pointer (skip touch devices).
   if (!window.matchMedia("(pointer: fine)").matches) return;
 
-  // Hide the native cursor on every element, including hover states for
-  // buttons and links. `*` + `*:hover` + `*::before/::after` covers text,
-  // pseudo-elements, and anything with a UA-default cursor (e.g. `pointer`).
-  const style = document.createElement("style");
-  style.textContent = `
-    *, *::before, *::after { cursor: none !important; }
-    *:hover, *:focus, *:active { cursor: none !important; }
-  `;
-  document.head.appendChild(style);
+  // Note: the actual `cursor: none` rule lives in styles/main.css so it's
+  // applied immediately on page load (before this module runs) and survives
+  // bfcache restores from browser swipe-back gestures.
 
-  // Trail: throttled + eased, so it visibly lags behind.
-  mountPointer({
+  const trail = mountSprite({
     srcIdle: "assets/trail.svg",
     srcClicked: "assets/trail.svg",
     opacity: 0.4,
-    throttleMs: 16,
     zIndex: 999,
-    smooth: true,
   });
-  // Main hand: zero throttle, no transition, 1:1 with mouse.
-  mountPointer({
+  const main = mountSprite({
     srcIdle: "assets/cursor.svg",
     srcClicked: "assets/cursor-clicked.svg",
     opacity: 1,
-    throttleMs: 0,
     zIndex: 1000,
-    smooth: false,
   });
+
+  // Latest mouse position (target) + current trail position (eased toward target).
+  let targetX = 0, targetY = 0;
+  let trailX = 0, trailY = 0;
+  let clicked = false;
+  let visible = false;
+  let primed = false;
+
+  // 0..1 — fraction of the remaining gap the trail closes each frame.
+  // Higher = snappier (less lag). 0.22 ≈ catches up in ~6 frames.
+  const TRAIL_EASE = 0.22;
+
+  const onMove = (e) => {
+    targetX = e.clientX;
+    targetY = e.clientY;
+    if (!primed) {
+      // First sighting — snap trail to the cursor so it doesn't fly in from 0,0.
+      trailX = targetX;
+      trailY = targetY;
+      primed = true;
+    }
+    if (!visible) {
+      main.style.opacity = "1";
+      trail.style.opacity = "0.4";
+      visible = true;
+    }
+    main.style.transform = `translate3d(${targetX}px, ${targetY}px, 0)${clicked ? " scale(0.95)" : ""}`;
+  };
+
+  const onLeave = () => {
+    main.style.opacity = "0";
+    trail.style.opacity = "0";
+    visible = false;
+  };
+  const onDown = () => {
+    clicked = true;
+    main.src = "assets/cursor-clicked.svg";
+    main.style.transform = `translate3d(${targetX}px, ${targetY}px, 0) scale(0.95)`;
+  };
+  const onUp = () => {
+    clicked = false;
+    main.src = "assets/cursor.svg";
+    main.style.transform = `translate3d(${targetX}px, ${targetY}px, 0)`;
+  };
+
+  document.addEventListener("mousemove", onMove);
+  document.addEventListener("mouseleave", onLeave);
+  document.addEventListener("mousedown", onDown);
+  document.addEventListener("mouseup", onUp);
+
+  // rAF loop: lerp the trail toward the target every frame so it can never get
+  // permanently left behind, regardless of how fast the cursor moves.
+  const tick = () => {
+    trailX += (targetX - trailX) * TRAIL_EASE;
+    trailY += (targetY - trailY) * TRAIL_EASE;
+    trail.style.transform = `translate3d(${trailX}px, ${trailY}px, 0)`;
+    requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
 }

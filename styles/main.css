@@ -4,6 +4,11 @@
   --stage-h: 554px;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
+/* Hide the native cursor everywhere — the custom Wii hand replaces it.
+   Baked into CSS (not JS) so it survives bfcache restore + swipe-back gestures. */
+@media (pointer: fine) {
+  html, body, *, *::before, *::after { cursor: none !important; }
+}
 html, body {
   width: 100%; height: 100%;
   background: var(--menu-bg);
