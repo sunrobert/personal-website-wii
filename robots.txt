@@ -1,0 +1,41 @@
+# Block AI training crawlers and content harvesters.
+# Regular search engines are left unrestricted (see the final group).
+
+User-agent: GPTBot
+User-agent: ChatGPT-User
+User-agent: OAI-SearchBot
+User-agent: ClaudeBot
+User-agent: anthropic-ai
+User-agent: Claude-Web
+User-agent: Claude-User
+User-agent: Claude-SearchBot
+User-agent: CCBot
+User-agent: Google-Extended
+User-agent: PerplexityBot
+User-agent: Perplexity-User
+User-agent: Bytespider
+User-agent: Amazonbot
+User-agent: Applebot-Extended
+User-agent: FacebookBot
+User-agent: Meta-ExternalAgent
+User-agent: Meta-ExternalFetcher
+User-agent: cohere-ai
+User-agent: cohere-training-data-crawler
+User-agent: Diffbot
+User-agent: ImagesiftBot
+User-agent: Omgilibot
+User-agent: Omgili
+User-agent: YouBot
+User-agent: Timpibot
+User-agent: AI2Bot
+User-agent: AI2Bot-Dolma
+User-agent: PanguBot
+User-agent: Kangaroo Bot
+User-agent: Webzio-Extended
+User-agent: Scrapy
+User-agent: magpie-crawler
+Disallow: /
+
+# Everyone else (Googlebot, Bingbot, DuckDuckBot, etc.): full access.
+User-agent: *
+Disallow:

@@ -21,7 +21,7 @@ if (backBtn) {
       });
     };
     const flash = document.getElementById("flash-overlay");
-    play("assets/audio/back.mp3");
+    play("assets/audio/back.wav");
     gsap.to(flash, {
       opacity: 1,
       duration: 0.15,
