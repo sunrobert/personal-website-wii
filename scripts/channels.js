@@ -2,8 +2,7 @@ export const CHANNELS = [
   { slot: 0, id: "photography", title: "Photography",      href: "photography.html", art: "assets/channels/photography.png" },
   { slot: 1, id: "social",      title: "Social Links",     href: "social.html",      art: "assets/channels/social.png" },
   { slot: 2, id: "writings",    title: "My Writings",      href: "writings.html",    art: "assets/channels/writings.png" },
-  { slot: 3, id: "mii-out",     title: "Check Mii Out Channel", href: "mii-out.html", art: "assets/channels/mii-out.png" },
-  { slot: 4, id: "books",       title: "Books",            href: "books.html",       art: "assets/channels/books.png" },
+  { slot: 3, id: "books",       title: "Books",            href: "books.html",       art: "assets/channels/books.png" },
 ];
 
 export function renderGrid(container) {

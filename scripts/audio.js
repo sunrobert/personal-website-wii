@@ -19,10 +19,12 @@ export function initAudio() {
     volume: 0,
     onloaderror: (_, err) => console.warn("BGM load failed", err),
   });
-  sfx.hover   = mkSfx("assets/audio/hover.mp3");
-  sfx.select  = mkSfx("assets/audio/select.mp3");
-  sfx.back    = mkSfx("assets/audio/back.mp3");
-  sfx.startup = mkSfx("assets/audio/startup.mp3");
+  // WAV (not mp3): instant decode with no encoder padding, and the clips are
+  // pre-trimmed to remove leading silence so SFX fire with no perceptible delay.
+  sfx.hover   = mkSfx("assets/audio/hover.wav");
+  sfx.select  = mkSfx("assets/audio/select.wav");
+  sfx.back    = mkSfx("assets/audio/back.wav");
+  sfx.startup = mkSfx("assets/audio/startup.wav");
 
   const unlock = () => {
     if (!startedBgm) {
@@ -43,23 +45,32 @@ export function initAudio() {
 }
 
 function fadeInBgm() {
+  // html5 playback starts asynchronously, so fading on the same tick as play()
+  // races the start and leaves the volume pinned at the `from` value (silent).
+  // Wait for the actual `play` event before ramping the volume up.
+  if (bgm.playing()) {
+    bgm.fade(bgm.volume(), 0.4, 2000);
+    return;
+  }
+  bgm.once("play", () => bgm.fade(0, 0.4, 2000));
   bgm.play();
-  bgm.fade(0, 0.4, 2000);
 }
 
 function playStartup() {
+  if (muted) return;
   try { sfx.startup.play(); } catch (_) {}
 }
 
 export function playHover() {
+  if (muted) return;
   const now = performance.now();
   if (now - lastHoverTs < HOVER_COOLDOWN_MS) return;
   lastHoverTs = now;
   sfx.hover.play();
 }
 
-export function playSelect() { sfx.select.play(); }
-export function playBack() { sfx.back.play(); }
+export function playSelect() { if (muted) return; sfx.select.play(); }
+export function playBack() { if (muted) return; sfx.back.play(); }
 
 export function toggleMute() {
   muted = !muted;

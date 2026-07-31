@@ -15,7 +15,7 @@ export function computeFillScale(viewportW, viewportH) {
 const BOTTOM_BAR_H = 100;
 // Extra zoom applied to the main menu so the grid fills the viewport snugly.
 // Subpages fit-to-viewport without the zoom multiplier.
-const MENU_ZOOM = 1.3;
+const MENU_ZOOM = 1.2;
 
 export function applyScale(stageEl) {
   const onMenu = stageEl.id === "stage";
