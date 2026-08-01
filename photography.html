@@ -168,6 +168,7 @@
       font-size: 13px;
       color: #c8c8c8;
       font-family: ui-monospace, Menlo, monospace;
+      margin-right: 60px; /* clear the close button */
     }
     .lightbox-close, .lightbox-nav {
       pointer-events: auto;
@@ -248,17 +249,80 @@
     //      one of the filenames inside the project folder).
     // ------------------------------------------------------------------
     const PROJECTS = [
-      { slug: "yonghe-temple",              title: "Yonghe Temple, Beijing '24",       thumb: "", images: [] },
-      { slug: "nights-in-nyc",              title: "Nights in NYC",                    thumb: "", images: [] },
-      { slug: "rule-of-ones",               title: "Rule of Ones, Twos, & Threes",     thumb: "", images: [] },
-      { slug: "people-of-hong-kong",        title: "People of Hong Kong '24",          thumb: "", images: [] },
-      { slug: "central-park",               title: "Central Park, NYC",                thumb: "", images: [] },
-      { slug: "classic-cars-nyc",           title: "Classic Cars NYC",                 thumb: "", images: [] },
-      { slug: "school",                     title: "School",                           thumb: "", images: [] },
-      { slug: "nights-in-china",            title: "Nights in China '24",              thumb: "", images: [] },
-      { slug: "vancouver-summer",           title: "Vancouver Summer '24",             thumb: "", images: [] },
-      { slug: "israeli-palestine-protest",  title: "Israeli & Palestine Protest 2023", thumb: "", images: [] },
-      { slug: "sunny-days-vancouver",       title: "Sunny Days in Vancouver",          thumb: "", images: [] },
+      { slug: "japan-25", title: "Japan '25", thumb: "", images: [
+        "DSC03666.jpg", "DSC03671.jpg", "DSC03672.jpg", "DSC03719.jpg",
+        "DSC03746.jpg", "DSC04157.jpg", "DSC04170.jpg", "DSC04354.jpg",
+        "DSC04360.jpg", "DSC04368.jpg", "DSC04490.jpg", "DSC04598.jpg",
+        "DSC04639.jpg", "DSC04646.jpg", "DSC04749.jpg"
+      ] },
+      { slug: "night-in-japan-25", title: "Night in Japan '25", thumb: "", images: [
+        "DSC03762.jpg", "DSC03782.jpg", "DSC03787.jpg", "DSC03796.jpg",
+        "DSC03814.jpg", "DSC03838.jpg", "DSC03912.jpg", "DSC03918.jpg",
+        "DSC03934.jpg", "DSC03950.jpg", "DSC03955.jpg", "DSC03980.jpg",
+        "DSC03994.jpg", "DSC04017.jpg", "DSC04057.jpg", "DSC04858.jpg",
+        "DSC04864.jpg", "DSC04891.jpg", "DSC04910.jpg", "DSC04933.jpg"
+      ] },
+      { slug: "yonghe-temple-beijing-24", title: "Yonghe Temple, Beijing '24", thumb: "", images: [
+        "DSC03492.jpg", "DSC03493.jpg", "DSC03497.jpg", "DSC03499.jpg",
+        "DSC03516.jpg", "DSC03520.jpg", "DSC03521.jpg", "DSC03528.jpg",
+        "DSC03534.jpg", "DSC03535.jpg", "DSC03558.jpg", "DSC03559.jpg",
+        "DSC03582.jpg", "DSC03583.jpg", "DSC03615.jpg", "DSC03616.jpg",
+        "DSC03618.jpg", "DSC03619.jpg", "DSC03621.jpg", "DSC03622.jpg",
+        "DSC03623.jpg", "DSC03624.jpg", "DSC03640.jpg", "DSC03646.jpg"
+      ] },
+      { slug: "people-of-hong-kong-24", title: "People of Hong Kong '24", thumb: "", images: [
+        "DSC03087.jpg", "DSC03090.jpg", "DSC03097.jpg", "DSC03099.jpg",
+        "DSC03112.jpg", "DSC03121.jpg", "DSC03123.jpg", "DSC03126.jpg",
+        "DSC03130.jpg", "DSC03141.jpg", "DSC03159.jpg", "DSC03161.jpg",
+        "DSC03164.jpg", "DSC03169.jpg", "DSC03173.jpg", "DSC03175.jpg",
+        "DSC03193.jpg", "DSC03196.jpg", "DSC03233.jpg", "DSC03236.jpg",
+        "DSC03276.jpg", "DSC03279.jpg", "DSC03296.jpg", "DSC03302.jpg",
+        "DSC03313.jpg", "DSC03326.jpg", "DSC03369.jpg", "DSC03375.jpg",
+        "DSC03391.jpg", "DSC03409.jpg"
+      ] },
+      { slug: "nights-in-china", title: "Nights in China", thumb: "", images: [
+        "DSC03420.jpg", "DSC03424.jpg", "DSC03425.jpg", "DSC03435.jpg",
+        "DSC03441.jpg", "DSC03445.jpg", "DSC03450.jpg", "DSC03453.jpg",
+        "DSC03457.jpg", "DSC03470.jpg", "DSC03476.jpg", "DSC05107.jpg",
+        "DSC05204.jpg"
+      ] },
+      { slug: "classic-cars-nyc", title: "Classic Cars NYC", thumb: "", images: [
+        "kodak_professional_portra_400_10_28_2023_000220010025.jpg",
+        "kodak_professional_portra_400_10_28_2023_000220010026.jpg",
+        "kodak_professional_portra_400_10_28_2023_000220010028.jpg",
+        "kodak_professional_portra_400_10_28_2023_000220010031.jpg",
+        "kodak_professional_portra_400_10_28_2023_000220010032.jpg",
+        "kodak_professional_portra_400_10_28_2023_000220010035.jpg",
+        "kodak_professional_portra_400_10_28_2023_000220010036.jpg"
+      ] },
+      { slug: "israel-palestine-protest-2023", title: "Israel/Palestine Protest 2023", thumb: "", images: [
+        "L1120504.jpg", "L1120511.jpg", "L1120537.jpg", "L1120539.jpg",
+        "L1120545.jpg", "L1120565.jpg", "L1120574.jpg", "L1120618.jpg",
+        "L1120641.jpg", "L1120661.jpg", "L1120673.jpg", "L1120737.jpg",
+        "L1120744.jpg", "L1120747.jpg", "L1120751.jpg", "L1120789.jpg"
+      ] },
+      { slug: "rules-of-1-2-3", title: "Rules of 1, 2, 3", thumb: "", images: [
+        "L1120799.jpg", "L1120813.jpg", "L1120823.jpg", "L1120835.jpg",
+        "L1120846.jpg", "L1120892.jpg", "L1120919.jpg", "L1120923.jpg",
+        "L1120934.jpg", "L1120958.jpg", "L1120971.jpg", "L1120986.jpg",
+        "L1130001.jpg", "L1130013.jpg", "L1130029.jpg", "L1130055.jpg",
+        "L1130069.jpg", "L1130101.jpg", "L1130154.jpg", "L1130276.jpg",
+        "L1130299.jpg"
+      ] },
+      { slug: "sunny-days-vancouver", title: "Sunny Days in Vancouver", thumb: "", images: [
+        "DSC01857.jpg", "DSC02169.jpg", "DSC02317.jpg", "DSC02377.jpg",
+        "DSC02418.jpg", "DSC02450.jpg", "DSC02492.jpg", "DSC02639.jpg",
+        "DSC02641.jpg", "DSC02674.jpg", "DSC02679.jpg", "DSC02722.jpg",
+        "DSC02745.jpg"
+      ] },
+      { slug: "highschool", title: "Highschool", thumb: "", images: [
+        "0024_14.jpg", "DSC00373.jpg", "DSC00438.jpg", "DSC00482.jpg",
+        "DSC00496.jpg", "DSC00509.jpg", "DSC00536.jpg", "DSC00537.jpg",
+        "DSC00554.jpg", "DSC00563.jpg", "DSC00601.jpg", "DSC00607.jpg",
+        "DSC00639.jpg", "DSC00660.jpg", "IMG_0028.jpg", "IMG_2966.jpg",
+        "IMG_2976.jpg", "IMG_2977.jpg", "RobertSun-211001-3916.jpg", "RobertSun-211013-4227.jpg",
+        "RobertSun-211023-4552.jpg", "RobertSun-211023-4579.jpg", "RobertSun-211103-5051.jpg", "pianoman.jpg"
+      ] },
     ];
 
     const resolvePath = (project, file) => {
