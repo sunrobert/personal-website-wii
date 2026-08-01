@@ -1,11 +1,11 @@
-import { installScaler } from "./scale.js";
-import { renderGrid } from "./channels.js";
-import { installKeyboardNav } from "./nav.js";
-import { renderBottomBar, installBottomBarNav } from "./bottom-bar.js";
-import { startClock } from "./clock.js";
-import { initAudio, playHover } from "./audio.js";
-import { zoomIntoChannel, zoomOutToMenu } from "./transitions.js";
-import { installCursor } from "./cursor.js";
+import { installScaler } from "./scale.js?v=1785534000";
+import { renderGrid } from "./channels.js?v=1785534000";
+import { installKeyboardNav } from "./nav.js?v=1785534000";
+import { renderBottomBar, installBottomBarNav } from "./bottom-bar.js?v=1785534000";
+import { startClock } from "./clock.js?v=1785534000";
+import { initAudio, playHover } from "./audio.js?v=1785534000";
+import { zoomIntoChannel, zoomOutToMenu } from "./transitions.js?v=1785534000";
+import { installCursor } from "./cursor.js?v=1785534000";
 
 installCursor();
 

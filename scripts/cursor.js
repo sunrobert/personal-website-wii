@@ -35,17 +35,20 @@ export function installCursor() {
   // applied immediately on page load (before this module runs) and survives
   // bfcache restores from browser swipe-back gestures.
 
+  // Above everything, including full-screen overlays (photo lightbox is 9999):
+  // with `cursor: none` on the page, anything stacked over these sprites
+  // leaves the user with no visible cursor at all.
   const trail = mountSprite({
     srcIdle: "assets/trail.svg",
     srcClicked: "assets/trail.svg",
     opacity: 0.4,
-    zIndex: 999,
+    zIndex: 100000,
   });
   const main = mountSprite({
     srcIdle: "assets/cursor.svg",
     srcClicked: "assets/cursor-clicked.svg",
     opacity: 1,
-    zIndex: 1000,
+    zIndex: 100001,
   });
 
   // Latest mouse position (target) + current trail position (eased toward target).
