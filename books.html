@@ -18,6 +18,7 @@
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
   <link rel="stylesheet" href="styles/main.css?v=1778541907" />
   <link rel="stylesheet" href="styles/subpage.css?v=1778541907" />
+  <link rel="stylesheet" href="styles/mobile.css?v=1785625000" />
   <style>
     .subpage-panel {
       background: transparent;
@@ -79,6 +80,14 @@
       max-width: 100%;
     }
     .book .author { color: #8a8f97; font-size: 12px; }
+
+    /* Mobile: smaller covers; center the carousel vertically in the page. */
+    @media (max-width: 700px) {
+      .subpage-panel { min-height: 60vh; }
+      .carousel-track { gap: 22px; }
+      .book { flex: 0 0 140px; }
+      .book-cover { width: 140px; }
+    }
   </style>
 </head>
 <body class="subpage">
@@ -122,6 +131,6 @@
   </script>
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/howler@2.2.4/dist/howler.min.js"></script>
-  <script type="module" src="scripts/subpage.js?v=1785534000"></script>
+  <script type="module" src="scripts/subpage.js?v=1785625000"></script>
 </body>
 </html>

@@ -17,7 +17,18 @@ const BOTTOM_BAR_H = 100;
 // Subpages fit-to-viewport without the zoom multiplier.
 const MENU_ZOOM = 1.2;
 
+// Below this width the site switches to the phone layout (styles/mobile.css):
+// pages flow and scroll natively, so the stage transform must not apply.
+export const MOBILE_LAYOUT_QUERY = "(max-width: 700px)";
+export function isMobileLayout() {
+  return window.matchMedia(MOBILE_LAYOUT_QUERY).matches;
+}
+
 export function applyScale(stageEl) {
+  if (isMobileLayout()) {
+    stageEl.style.transform = "";
+    return;
+  }
   const onMenu = stageEl.id === "stage";
   const stageW = onMenu ? STAGE_W : stageEl.offsetWidth || STAGE_W;
   const stageH = onMenu ? STAGE_H : stageEl.offsetHeight || STAGE_H;
