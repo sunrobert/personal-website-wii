@@ -3,6 +3,7 @@ export const CHANNELS = [
   { slot: 1, id: "social",      title: "Social Links",     href: "social.html",      art: "assets/channels/social.png" },
   { slot: 2, id: "writings",    title: "My Writings",      href: "writings.html",    art: "assets/channels/writings.png" },
   { slot: 3, id: "books",       title: "Books",            href: "books.html",       art: "assets/channels/books.png" },
+  { slot: 4, id: "bookmarks",   title: "Bookmarks",        href: "bookmarks.html",   art: "assets/channels/bookmarks.png" },
 ];
 
 export function renderGrid(container) {

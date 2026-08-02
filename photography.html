@@ -18,6 +18,7 @@
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
   <link rel="stylesheet" href="styles/main.css?v=1778541907" />
   <link rel="stylesheet" href="styles/subpage.css?v=1778541907" />
+  <link rel="stylesheet" href="styles/mobile.css?v=1785625000" />
   <style>
     /* 5x2 grid: all ten projects visible at once, no internal scrolling. */
     .subpage-panel {
@@ -230,6 +231,20 @@
       transition: background 200ms;
     }
     .lightbox-progress .dot.active { background: #fff; }
+
+    /* Mobile: 2-column scrolling grid, tighter lightbox chrome. */
+    @media (max-width: 700px) {
+      .subpage-panel { height: auto; display: block; padding: 14px; }
+      .project-grid { grid-template-columns: repeat(2, 1fr); gap: 14px 12px; }
+      .lightbox-stage { width: 100vw; height: 76vh; }
+      .lightbox-top { top: 14px; left: 14px; right: 14px; }
+      .lightbox-title { font-size: 15px; }
+      .lightbox-counter { margin-right: 48px; }
+      .lightbox-close { top: 10px; right: 12px; width: 38px; height: 38px; }
+      .lightbox-nav.prev { left: 8px; width: 38px; height: 38px; }
+      .lightbox-nav.next { right: 8px; width: 38px; height: 38px; }
+      .lightbox-progress { bottom: 18px; }
+    }
   </style>
 </head>
 <body class="subpage">
@@ -455,6 +470,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/howler@2.2.4/dist/howler.min.js"></script>
-  <script type="module" src="scripts/subpage.js?v=1785534000"></script>
+  <script type="module" src="scripts/subpage.js?v=1785625000"></script>
 </body>
 </html>
