@@ -1,4 +1,4 @@
-import { playSelect, playHover, playBack } from "./audio.js?v=1785715000";
+import { playSelect, playHover, playBack } from "./audio.js?v=1785812000";
 
 export function showChannelPreview(channel) {
   const overlay = document.createElement("div");
@@ -55,6 +55,12 @@ export function showChannelPreview(channel) {
     if (e.key === "ArrowRight") startBtn.focus();
   });
 
-  gsap.fromTo(overlay, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power1.out" });
+  // Enter: fast fade + a subtle settle on the banner stage (skipped under
+  // reduced motion — the fade alone carries comprehension).
+  gsap.fromTo(overlay, { opacity: 0 }, { opacity: 1, duration: 0.25, ease: "expo.out" });
+  if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const stage = overlay.querySelector(".cp-stage");
+    gsap.fromTo(stage, { scale: 0.985 }, { scale: 1, duration: 0.25, ease: "expo.out" });
+  }
   requestAnimationFrame(() => startBtn.focus());
 }

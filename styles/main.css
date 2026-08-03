@@ -2,6 +2,10 @@
   --menu-bg: #e8e8e8;
   --stage-w: 985px;
   --stage-h: 554px;
+  /* Easing tokens — the site's two curve families. The inline pre-paint
+     scripts keep raw literals on purpose (bootstrap must not depend on CSSOM). */
+  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-menu: cubic-bezier(0.2, 0.9, 0.3, 1);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 /* Hide the native cursor everywhere — the custom Wii hand replaces it.

@@ -16,9 +16,9 @@
   <meta name="twitter:description" content="Videos, articles, and quotes collected over the years." />
   <meta name="twitter:image" content="assets/avatar.jpg" />
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
-  <link rel="stylesheet" href="styles/main.css?v=1778541907" />
-  <link rel="stylesheet" href="styles/subpage.css?v=1778541907" />
-  <link rel="stylesheet" href="styles/mobile.css?v=1785715000" />
+  <link rel="stylesheet" href="styles/main.css?v=1785812000" />
+  <link rel="stylesheet" href="styles/subpage.css?v=1785812000" />
+  <link rel="stylesheet" href="styles/mobile.css?v=1785812000" />
   <style>
     /* Taller collection window: trimmed chrome, panel flexes to fill the
        stage instead of the stock calc(100% - 160px) box. */
@@ -55,7 +55,7 @@
       border-radius: 999px;
       cursor: pointer;
       /* color change only — the moving part is the indicator below */
-      transition: color 150ms ease, transform 150ms cubic-bezier(0.23, 1, 0.32, 1);
+      transition: color 150ms ease, transform 150ms var(--ease-out-strong);
     }
     .bm-tab:active { transform: scale(0.96); }
     .bm-tab[aria-selected="true"] { color: #2a6fae; }
@@ -70,7 +70,7 @@
       box-shadow: 0 1px 3px rgba(0,0,0,0.12);
       /* transform+width transition: interruptible — rapid tab taps retarget
          smoothly instead of restarting from zero */
-      transition: transform 200ms cubic-bezier(0.23, 1, 0.32, 1), width 200ms cubic-bezier(0.23, 1, 0.32, 1);
+      transition: transform 200ms var(--ease-out-strong), width 200ms var(--ease-out-strong);
     }
 
     /* --- Masonry of cards ------------------------------------------------ */
@@ -99,8 +99,8 @@
       opacity: 0;
       transform: translateY(8px) scale(0.98);
       transition:
-        opacity 300ms cubic-bezier(0.23, 1, 0.32, 1),
-        transform 300ms cubic-bezier(0.23, 1, 0.32, 1),
+        opacity 300ms var(--ease-out-strong),
+        transform 300ms var(--ease-out-strong),
         box-shadow 180ms ease;
     }
     .bm-card.entered {
@@ -162,7 +162,7 @@
       border-radius: 50%;
       background: rgba(255,255,255,0.92) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M9 6.5v11l9-5.5z' fill='%232f3339'/></svg>") center/26px no-repeat;
       box-shadow: 0 2px 8px rgba(0,0,0,0.35);
-      transition: transform 180ms cubic-bezier(0.23, 1, 0.32, 1);
+      transition: transform 180ms var(--ease-out-strong);
     }
     @media (hover: hover) and (pointer: fine) {
       .bm-card:hover .bm-play::after { transform: scale(1.08); }
@@ -217,7 +217,6 @@
 
     /* --- Video lightbox (same enter/exit system as the photo viewer) ----- */
     .bm-lightbox {
-      --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
       position: fixed;
       inset: 0;
       background: rgba(0,0,0,0.92);
@@ -316,6 +315,52 @@
       <button class="wii-menu-btn" data-channel-id="bookmarks">Wii Menu</button>
     </div>
   </div>
+
+  <script>
+    // Pre-paint scale + arrival flash — mirrors scripts/scale.js applyScale
+    // (constants must stay in sync). Runs inline so the first painted frame is
+    // already at the correct zoom, and so pages arrive from the same white the
+    // previous page flashed out to — content is fully painted under the
+    // overlay from frame 1, with zero dependence on CDN script latency.
+    (function () {
+      var mobile = window.matchMedia("(max-width: 700px)").matches;
+      var el = document.getElementById("stage") || document.querySelector(".subpage-stage");
+      if (!el) return;
+      var menu = el.id === "stage";
+      if (!mobile) {
+        var w = menu ? 985 : 1280, h = menu ? 554 : 720;
+        var vh = window.innerHeight - (menu ? 100 : 0);
+        var fit = Math.min(window.innerWidth / w, vh / h);
+        el.style.transform = "scale(" + (menu ? fit * 1.2 : fit) + ")";
+      }
+      var f = document.getElementById("flash-overlay");
+      if (!f) return;
+      if (menu) {
+        // Returning from a subpage: hold the white until the zoom-out fades it.
+        var returning = false;
+        try { returning = !!sessionStorage.getItem("wiiReturn"); } catch (_) {}
+        if (location.search.indexOf("return=") !== -1) returning = true;
+        if (returning) {
+          f.style.opacity = "1";
+          // Safety: if modules stall on a slow network, don't stay white.
+          setTimeout(function () {
+            if (getComputedStyle(f).opacity === "1") {
+              f.style.transition = "opacity 300ms cubic-bezier(0.23, 1, 0.32, 1)";
+              f.style.opacity = "0";
+            }
+          }, 2500);
+        }
+      } else {
+        // Subpage arrival: fade in from white, symmetric with the white-out exit.
+        f.style.opacity = "1";
+        requestAnimationFrame(function () {
+          f.style.transition = "opacity 150ms cubic-bezier(0.23, 1, 0.32, 1)";
+          f.style.opacity = "0";
+          setTimeout(function () { f.style.transition = ""; }, 250);
+        });
+      }
+    })();
+  </script>
 
   <!-- Video lightbox -->
   <div class="bm-lightbox" id="bm-lightbox" aria-hidden="true">
@@ -495,8 +540,8 @@
     });
   </script>
 
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/howler@2.2.4/dist/howler.min.js"></script>
-  <script type="module" src="scripts/subpage.js?v=1785715000"></script>
+  <script defer src="assets/vendor/gsap.min.js?v=1785812000"></script>
+  <script defer src="assets/vendor/howler.min.js?v=1785812000"></script>
+  <script type="module" src="scripts/subpage.js?v=1785812000"></script>
 </body>
 </html>

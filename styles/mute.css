@@ -11,5 +11,10 @@
   cursor: pointer;
   font-size: 20px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+  transition: transform 150ms var(--ease-out-strong), background 150ms ease;
 }
-.mute-btn:hover { background: #fff; }
+@media (hover: hover) and (pointer: fine) {
+  .mute-btn:hover { background: #fff; }
+}
+/* Press feedback: the toggle should feel heard. */
+.mute-btn:active { transform: scale(0.92); }

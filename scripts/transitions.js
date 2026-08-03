@@ -1,5 +1,5 @@
-import { playSelect } from "./audio.js?v=1785715000";
-import { showChannelPreview } from "./channel-preview.js?v=1785715000";
+import { playSelect } from "./audio.js?v=1785812000";
+import { showChannelPreview } from "./channel-preview.js?v=1785812000";
 
 const prefersReducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -52,7 +52,13 @@ export function zoomIntoChannel(channelEl, href) {
 // When arriving at the menu with ?return=<id>, play the reverse.
 export function zoomOutToMenu(returnId) {
   const channelEl = document.querySelector(`.channel--active[data-channel-id="${returnId}"]`);
-  if (!channelEl) return;
+  if (!channelEl) {
+    // No tile to zoom from (e.g. returning from about/messages via the bottom
+    // bar) — still release the arrival flash the inline script holds up.
+    const flash = document.getElementById("flash-overlay");
+    if (flash) gsap.to(flash, { opacity: 0, duration: 0.25, ease: "power1.out" });
+    return;
+  }
 
   if (prefersReducedMotion()) {
     const flash = document.getElementById("flash-overlay");

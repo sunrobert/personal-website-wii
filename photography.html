@@ -16,9 +16,9 @@
   <meta name="twitter:description" content="Photography by Robert Sun — projects shot across China, the U.S., and Canada." />
   <meta name="twitter:image" content="assets/avatar.jpg" />
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
-  <link rel="stylesheet" href="styles/main.css?v=1778541907" />
-  <link rel="stylesheet" href="styles/subpage.css?v=1778541907" />
-  <link rel="stylesheet" href="styles/mobile.css?v=1785715000" />
+  <link rel="stylesheet" href="styles/main.css?v=1785812000" />
+  <link rel="stylesheet" href="styles/subpage.css?v=1785812000" />
+  <link rel="stylesheet" href="styles/mobile.css?v=1785812000" />
   <style>
     /* 5x2 grid: all ten projects visible at once, no internal scrolling. */
     .subpage-panel {
@@ -52,7 +52,7 @@
         0 1px 3px rgba(0,0,0,0.10),
         0 6px 14px -6px rgba(0,0,0,0.18);
       position: relative;
-      transition: transform 200ms cubic-bezier(0.2, 0.9, 0.3, 1), box-shadow 200ms ease-out;
+      transition: transform 200ms var(--ease-menu), box-shadow 200ms ease-out;
     }
     .project-thumb img {
       width: 100%;
@@ -67,7 +67,14 @@
       background: linear-gradient(180deg, transparent 55%, rgba(0,0,0,0.35) 100%);
       pointer-events: none;
     }
-    .project-card:hover .project-thumb,
+    @media (hover: hover) and (pointer: fine) {
+      .project-card:hover .project-thumb {
+        transform: translateY(-3px);
+        box-shadow:
+          0 4px 10px rgba(0,0,0,0.18),
+          0 16px 30px -8px rgba(0,0,0,0.25);
+      }
+    }
     .project-card:focus-visible .project-thumb {
       transform: translateY(-3px);
       box-shadow:
@@ -97,7 +104,6 @@
        Kept in the DOM (visibility toggled, not display) so enter/exit
        transitions actually run. Enter 200ms, exit 150ms — exits snappier. */
     .lightbox {
-      --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
       position: fixed;
       inset: 0;
       background: rgba(0,0,0,0.92);
@@ -228,9 +234,10 @@
       height: 7px;
       border-radius: 999px;
       background: rgba(255,255,255,0.3);
-      transition: background 200ms;
+      /* Active dot stretches into a pill; tiny area, layout cost trivial. */
+      transition: width 200ms var(--ease-out-strong), background 200ms ease;
     }
-    .lightbox-progress .dot.active { background: #fff; }
+    .lightbox-progress .dot.active { width: 18px; background: #fff; }
 
     /* Mobile: 2-column scrolling grid, tighter lightbox chrome. */
     @media (max-width: 700px) {
@@ -261,6 +268,52 @@
       <button class="wii-menu-btn" data-channel-id="photography">Wii Menu</button>
     </div>
   </div>
+
+  <script>
+    // Pre-paint scale + arrival flash — mirrors scripts/scale.js applyScale
+    // (constants must stay in sync). Runs inline so the first painted frame is
+    // already at the correct zoom, and so pages arrive from the same white the
+    // previous page flashed out to — content is fully painted under the
+    // overlay from frame 1, with zero dependence on CDN script latency.
+    (function () {
+      var mobile = window.matchMedia("(max-width: 700px)").matches;
+      var el = document.getElementById("stage") || document.querySelector(".subpage-stage");
+      if (!el) return;
+      var menu = el.id === "stage";
+      if (!mobile) {
+        var w = menu ? 985 : 1280, h = menu ? 554 : 720;
+        var vh = window.innerHeight - (menu ? 100 : 0);
+        var fit = Math.min(window.innerWidth / w, vh / h);
+        el.style.transform = "scale(" + (menu ? fit * 1.2 : fit) + ")";
+      }
+      var f = document.getElementById("flash-overlay");
+      if (!f) return;
+      if (menu) {
+        // Returning from a subpage: hold the white until the zoom-out fades it.
+        var returning = false;
+        try { returning = !!sessionStorage.getItem("wiiReturn"); } catch (_) {}
+        if (location.search.indexOf("return=") !== -1) returning = true;
+        if (returning) {
+          f.style.opacity = "1";
+          // Safety: if modules stall on a slow network, don't stay white.
+          setTimeout(function () {
+            if (getComputedStyle(f).opacity === "1") {
+              f.style.transition = "opacity 300ms cubic-bezier(0.23, 1, 0.32, 1)";
+              f.style.opacity = "0";
+            }
+          }, 2500);
+        }
+      } else {
+        // Subpage arrival: fade in from white, symmetric with the white-out exit.
+        f.style.opacity = "1";
+        requestAnimationFrame(function () {
+          f.style.transition = "opacity 150ms cubic-bezier(0.23, 1, 0.32, 1)";
+          f.style.opacity = "0";
+          setTimeout(function () { f.style.transition = ""; }, 250);
+        });
+      }
+    })();
+  </script>
 
   <!-- Slideshow overlay -->
   <div class="lightbox" id="lightbox" aria-hidden="true">
@@ -401,6 +454,9 @@
       current.project = project;
       current.index = 0;
       lbTitle.textContent = project.title;
+      // Dots are built once per project; renderSlide only toggles classes so
+      // the width transition can actually run (innerHTML rebuilds can't animate).
+      lbProgress.innerHTML = project.images.map(() => `<span class="dot"></span>`).join("");
       lb.classList.add("open");
       lb.setAttribute("aria-hidden", "false");
       renderSlide();
@@ -432,7 +488,7 @@
       const src = resolvePath(project, imgs[index]);
       lbStage.innerHTML = `<img class="lightbox-img" src="${src}" alt="${project.title} – ${index + 1}" />`;
       lbCounter.textContent = `${index + 1} / ${imgs.length}`;
-      lbProgress.innerHTML = imgs.map((_, i) => `<span class="dot ${i === index ? "active" : ""}"></span>`).join("");
+      Array.from(lbProgress.children).forEach((d, i) => d.classList.toggle("active", i === index));
     }
     function startTimer() {
       stopTimer();
@@ -468,8 +524,8 @@
     });
   </script>
 
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/howler@2.2.4/dist/howler.min.js"></script>
-  <script type="module" src="scripts/subpage.js?v=1785715000"></script>
+  <script defer src="assets/vendor/gsap.min.js?v=1785812000"></script>
+  <script defer src="assets/vendor/howler.min.js?v=1785812000"></script>
+  <script type="module" src="scripts/subpage.js?v=1785812000"></script>
 </body>
 </html>
