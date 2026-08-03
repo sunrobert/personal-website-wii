@@ -1,11 +1,11 @@
-import { installScaler } from "./scale.js?v=1785625000";
-import { renderGrid } from "./channels.js?v=1785625000";
-import { installKeyboardNav } from "./nav.js?v=1785625000";
-import { renderBottomBar, installBottomBarNav } from "./bottom-bar.js?v=1785625000";
-import { startClock } from "./clock.js?v=1785625000";
-import { initAudio, playHover } from "./audio.js?v=1785625000";
-import { zoomIntoChannel, zoomOutToMenu } from "./transitions.js?v=1785625000";
-import { installCursor } from "./cursor.js?v=1785625000";
+import { installScaler } from "./scale.js?v=1785715000";
+import { renderGrid } from "./channels.js?v=1785715000";
+import { installKeyboardNav } from "./nav.js?v=1785715000";
+import { renderBottomBar, installBottomBarNav } from "./bottom-bar.js?v=1785715000";
+import { startClock } from "./clock.js?v=1785715000";
+import { initAudio, playHover } from "./audio.js?v=1785715000";
+import { zoomIntoChannel, zoomOutToMenu } from "./transitions.js?v=1785715000";
+import { installCursor } from "./cursor.js?v=1785715000";
 
 installCursor();
 
@@ -37,8 +37,15 @@ for (const el of grid.querySelectorAll(".channel--active")) {
   });
 }
 
+// Return id arrives via sessionStorage (see subpage.js — avoids per-query-param
+// cache variants of index.html). The ?return= fallback still works for any
+// stale cached subpage that navigates the old way.
 const params = new URLSearchParams(location.search);
-const returnId = params.get("return");
+let returnId = params.get("return");
+try {
+  returnId = returnId || sessionStorage.getItem("wiiReturn");
+  sessionStorage.removeItem("wiiReturn");
+} catch (_) {}
 if (returnId) {
   requestAnimationFrame(() => zoomOutToMenu(returnId));
 } else {

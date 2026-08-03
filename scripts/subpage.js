@@ -1,6 +1,6 @@
 // Shared script for sub-pages: scaling, back button, audio (mute persisted).
-import { installScaler } from "./scale.js?v=1785625000";
-import { installCursor } from "./cursor.js?v=1785625000";
+import { installScaler } from "./scale.js?v=1785715000";
+import { installCursor } from "./cursor.js?v=1785715000";
 
 installCursor();
 
@@ -26,7 +26,11 @@ if (backBtn) {
       opacity: 1,
       duration: 0.15,
       onComplete: () => {
-        window.location.href = `index.html?return=${encodeURIComponent(id)}`;
+        // Return id travels via sessionStorage, NOT a ?return= query param:
+        // each query variant of index.html is a separate HTTP cache entry, so
+        // stale variants could serve an old menu (missing newer channels).
+        try { sessionStorage.setItem("wiiReturn", id); } catch (_) {}
+        window.location.href = "index.html";
       },
     });
   });
