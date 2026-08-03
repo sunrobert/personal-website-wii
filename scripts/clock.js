@@ -17,7 +17,8 @@ export function startClock(timeEl, dateEl) {
   const tick = () => {
     const now = new Date();
     const { hhmm, ampm } = formatTime(now);
-    timeEl.innerHTML = `${hhmm}<span class="ampm">${ampm}</span>`;
+    // Colon in its own span so CSS can blink it, Wii-style.
+    timeEl.innerHTML = `${hhmm.replace(":", '<span class="colon">:</span>')}<span class="ampm">${ampm}</span>`;
     dateEl.textContent = formatDate(now);
   };
   tick();

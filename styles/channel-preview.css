@@ -103,7 +103,15 @@
   transition: transform 150ms ease-out, box-shadow 150ms ease-out;
 }
 
-.cp-btn:hover,
+@media (hover: hover) and (pointer: fine) {
+  .cp-btn:hover {
+    transform: translateY(-1px) scale(1.02);
+    box-shadow:
+      0 0 0 3px rgba(111, 182, 255, 0.6),
+      0 6px 12px rgba(0, 0, 0, 0.22),
+      inset 0 2px 0 rgba(255, 255, 255, 0.9);
+  }
+}
 .cp-btn:focus-visible {
   transform: translateY(-1px) scale(1.02);
   outline: none;

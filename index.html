@@ -16,12 +16,12 @@
   <meta name="twitter:description" content="A Wii Menu styled hub for Robert Sun's photography, writing, books, and links." />
   <meta name="twitter:image" content="assets/avatar.jpg" />
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
-  <link rel="stylesheet" href="styles/main.css?v=1778541907" />
-  <link rel="stylesheet" href="styles/channel.css?v=1778541907" />
-  <link rel="stylesheet" href="styles/bottom-bar.css?v=1778541907" />
-  <link rel="stylesheet" href="styles/mute.css?v=1778541907" />
-  <link rel="stylesheet" href="styles/channel-preview.css?v=1778541907" />
-  <link rel="stylesheet" href="styles/mobile.css?v=1785715000" />
+  <link rel="stylesheet" href="styles/main.css?v=1785812000" />
+  <link rel="stylesheet" href="styles/channel.css?v=1785812000" />
+  <link rel="stylesheet" href="styles/bottom-bar.css?v=1785812000" />
+  <link rel="stylesheet" href="styles/mute.css?v=1785812000" />
+  <link rel="stylesheet" href="styles/channel-preview.css?v=1785812000" />
+  <link rel="stylesheet" href="styles/mobile.css?v=1785812000" />
 </head>
 <body>
   <div id="letterbox">
@@ -30,10 +30,57 @@
       <div id="flash-overlay"></div>
     </div>
   </div>
+
+  <script>
+    // Pre-paint scale + arrival flash — mirrors scripts/scale.js applyScale
+    // (constants must stay in sync). Runs inline so the first painted frame is
+    // already at the correct zoom, and so pages arrive from the same white the
+    // previous page flashed out to — content is fully painted under the
+    // overlay from frame 1, with zero dependence on CDN script latency.
+    (function () {
+      var mobile = window.matchMedia("(max-width: 700px)").matches;
+      var el = document.getElementById("stage") || document.querySelector(".subpage-stage");
+      if (!el) return;
+      var menu = el.id === "stage";
+      if (!mobile) {
+        var w = menu ? 985 : 1280, h = menu ? 554 : 720;
+        var vh = window.innerHeight - (menu ? 100 : 0);
+        var fit = Math.min(window.innerWidth / w, vh / h);
+        el.style.transform = "scale(" + (menu ? fit * 1.2 : fit) + ")";
+      }
+      var f = document.getElementById("flash-overlay");
+      if (!f) return;
+      if (menu) {
+        // Returning from a subpage: hold the white until the zoom-out fades it.
+        var returning = false;
+        try { returning = !!sessionStorage.getItem("wiiReturn"); } catch (_) {}
+        if (location.search.indexOf("return=") !== -1) returning = true;
+        if (returning) {
+          document.documentElement.classList.add("returning");
+          f.style.opacity = "1";
+          // Safety: if modules stall on a slow network, don't stay white.
+          setTimeout(function () {
+            if (getComputedStyle(f).opacity === "1") {
+              f.style.transition = "opacity 300ms cubic-bezier(0.23, 1, 0.32, 1)";
+              f.style.opacity = "0";
+            }
+          }, 2500);
+        }
+      } else {
+        // Subpage arrival: fade in from white, symmetric with the white-out exit.
+        f.style.opacity = "1";
+        requestAnimationFrame(function () {
+          f.style.transition = "opacity 150ms cubic-bezier(0.23, 1, 0.32, 1)";
+          f.style.opacity = "0";
+          setTimeout(function () { f.style.transition = ""; }, 250);
+        });
+      }
+    })();
+  </script>
   <footer id="bottom-bar"></footer>
   <button id="mute-toggle" class="mute-btn" aria-label="Toggle sound" aria-pressed="false">🔊</button>
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/howler@2.2.4/dist/howler.min.js"></script>
-  <script type="module" src="scripts/menu.js?v=1785715000"></script>
+  <script defer src="assets/vendor/gsap.min.js?v=1785812000"></script>
+  <script defer src="assets/vendor/howler.min.js?v=1785812000"></script>
+  <script type="module" src="scripts/menu.js?v=1785812000"></script>
 </body>
 </html>
