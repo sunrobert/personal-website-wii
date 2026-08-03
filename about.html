@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>About Me — Robert Sun</title>
   <meta name="description" content="About Robert Sun — a 22-year-old based in Atlanta, born in Canada, who has lived between China, the U.S., and Canada." />
   <meta name="robots" content="index, follow, noai, noimageai" />
@@ -16,9 +16,9 @@
   <meta name="twitter:description" content="A 22-year-old based in Atlanta, born in Canada, who has lived between China, the U.S., and Canada." />
   <meta name="twitter:image" content="assets/avatar.jpg" />
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
-  <link rel="stylesheet" href="styles/main.css?v=1785812000" />
-  <link rel="stylesheet" href="styles/subpage.css?v=1785812000" />
-  <link rel="stylesheet" href="styles/mobile.css?v=1785812000" />
+  <link rel="stylesheet" href="styles/main.css?v=1785815000" />
+  <link rel="stylesheet" href="styles/subpage.css?v=1785815000" />
+  <link rel="stylesheet" href="styles/mobile.css?v=1785818000" />
   <style>
     /* Fixed 1280x720 stage scaled to the viewport (same system as the other
        subpages) — the whole page always fits on one screen, no scrolling. */
@@ -60,6 +60,7 @@
         border-color: rgba(80, 150, 220, 0.9);
       }
     }
+    .back-pill.wii-menu-btn:active { transform: scale(0.97); }
     .back-pill.wii-menu-btn:focus-visible {
       transform: translateY(-1px);
       box-shadow: 0 4px 10px rgba(80, 150, 220, 0.25);
@@ -289,11 +290,11 @@
     })();
   </script>
 
-  <script defer src="assets/vendor/gsap.min.js?v=1785812000"></script>
-  <script defer src="assets/vendor/howler.min.js?v=1785812000"></script>
-  <script type="module" src="scripts/subpage.js?v=1785812000"></script>
+  <script defer src="assets/vendor/gsap.min.js?v=1785815000"></script>
+  <script defer src="assets/vendor/howler.min.js?v=1785815000"></script>
+  <script type="module" src="scripts/subpage.js?v=1785815000"></script>
   <script type="module">
-    import { formatTime, formatDate } from "./scripts/clock.js?v=1785812000";
+    import { formatTime, formatDate } from "./scripts/clock.js?v=1785815000";
     const root = document.getElementById("about-clock");
     const dateEl = root.querySelector(".date");
     const timeEl = root.querySelector(".time");

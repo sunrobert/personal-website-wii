@@ -121,7 +121,7 @@
     inset 0 2px 0 rgba(255, 255, 255, 0.9);
 }
 
-.cp-btn:active { transform: translateY(0) scale(0.99); }
+.cp-btn:active { transform: translateY(0) scale(0.97); }
 
 #cp-flash {
   position: absolute;

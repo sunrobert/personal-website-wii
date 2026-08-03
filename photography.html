@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Photography — Robert Sun</title>
   <meta name="description" content="Photography by Robert Sun — projects shot across China, the U.S., and Canada." />
   <meta name="robots" content="index, follow, noai, noimageai" />
@@ -16,9 +16,9 @@
   <meta name="twitter:description" content="Photography by Robert Sun — projects shot across China, the U.S., and Canada." />
   <meta name="twitter:image" content="assets/avatar.jpg" />
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
-  <link rel="stylesheet" href="styles/main.css?v=1785812000" />
-  <link rel="stylesheet" href="styles/subpage.css?v=1785812000" />
-  <link rel="stylesheet" href="styles/mobile.css?v=1785812000" />
+  <link rel="stylesheet" href="styles/main.css?v=1785815000" />
+  <link rel="stylesheet" href="styles/subpage.css?v=1785815000" />
+  <link rel="stylesheet" href="styles/mobile.css?v=1785818000" />
   <style>
     /* 5x2 grid: all ten projects visible at once, no internal scrolling. */
     .subpage-panel {
@@ -75,6 +75,7 @@
           0 16px 30px -8px rgba(0,0,0,0.25);
       }
     }
+    .project-card:active .project-thumb { transform: scale(0.98); }
     .project-card:focus-visible .project-thumb {
       transform: translateY(-3px);
       box-shadow:
@@ -123,6 +124,7 @@
       transition: opacity 200ms var(--ease-out-strong), visibility 0s;
     }
     .lightbox-stage {
+      touch-action: pan-y; /* we own horizontal gestures (swipe to navigate) */
       width: min(92vw, 1400px);
       height: min(86vh, 900px);
       position: relative;
@@ -247,9 +249,9 @@
       .lightbox-top { top: 14px; left: 14px; right: 14px; }
       .lightbox-title { font-size: 15px; }
       .lightbox-counter { margin-right: 48px; }
-      .lightbox-close { top: 10px; right: 12px; width: 38px; height: 38px; }
-      .lightbox-nav.prev { left: 8px; width: 38px; height: 38px; }
-      .lightbox-nav.next { right: 8px; width: 38px; height: 38px; }
+      .lightbox-close { top: 10px; right: 12px; }
+      .lightbox-nav.prev { left: 8px; }
+      .lightbox-nav.next { right: 8px; }
       .lightbox-progress { bottom: 18px; }
     }
   </style>
@@ -506,6 +508,27 @@
       renderSlide();
     }
 
+    // Swipe to navigate (touch): momentum-based — a quick flick advances even
+    // on a short drag (threshold 60px OR velocity > 0.11 px/ms). Single-touch
+    // only; pointer capture keeps the gesture when the finger leaves the stage.
+    let swipe = null;
+    lbStage.addEventListener("pointerdown", (e) => {
+      if (e.pointerType === "mouse" || swipe) return;
+      swipe = { id: e.pointerId, x: e.clientX, t: performance.now() };
+      try { lbStage.setPointerCapture(e.pointerId); } catch (_) {}
+    });
+    lbStage.addEventListener("pointerup", (e) => {
+      if (!swipe || e.pointerId !== swipe.id) return;
+      const dx = e.clientX - swipe.x;
+      const velocity = Math.abs(dx) / Math.max(1, performance.now() - swipe.t);
+      swipe = null;
+      if (Math.abs(dx) >= 60 || velocity > 0.11) {
+        advance(dx < 0 ? 1 : -1);
+        startTimer();
+      }
+    });
+    lbStage.addEventListener("pointercancel", () => { swipe = null; });
+
     // Wire events
     grid.addEventListener("click", (e) => {
       const card = e.target.closest(".project-card");
@@ -524,8 +547,8 @@
     });
   </script>
 
-  <script defer src="assets/vendor/gsap.min.js?v=1785812000"></script>
-  <script defer src="assets/vendor/howler.min.js?v=1785812000"></script>
-  <script type="module" src="scripts/subpage.js?v=1785812000"></script>
+  <script defer src="assets/vendor/gsap.min.js?v=1785815000"></script>
+  <script defer src="assets/vendor/howler.min.js?v=1785815000"></script>
+  <script type="module" src="scripts/subpage.js?v=1785815000"></script>
 </body>
 </html>
