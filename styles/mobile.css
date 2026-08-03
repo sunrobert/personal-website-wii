@@ -27,20 +27,32 @@
     position: static;
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
-    padding: 18px 16px 118px; /* clearance for the fixed bottom bar */
-    align-content: start;
+    padding: 14px 16px calc(102px + env(safe-area-inset-bottom, 0px));
+    /* Fill the whole screen: leftover height is distributed evenly BETWEEN
+       rows, so tiles keep their proportions and no blank pool forms below. */
+    align-content: space-evenly;
+    min-height: 100vh;
+    min-height: 100dvh; /* track the real visible height as browser chrome collapses */
   }
-  .channel { border-radius: 16px; }
+  .channel {
+    border-radius: 16px;
+    /* 4:3 — the Wii Phone app's tile proportion; close to the 16:9 original
+       without the squashed-square look of fully stretched cells. */
+    aspect-ratio: 4 / 3;
+  }
   .channel__title { font-size: 16px; top: 8px; }
   .channel--empty .channel__watermark { font-size: 26px; }
+  /* Phone: cap the grid at 8 tiles (4 rows of 2) — hide only EMPTY tiles
+     past the 8th slot, so future real channels always stay visible. */
+  .channel--empty:nth-child(n + 9) { display: none; }
   /* The stage no longer covers the viewport, but the page-transition flash
      still should. */
   #flash-overlay { position: fixed; }
 
   /* --- Bottom Wii bar --------------------------------------------------- */
   #bottom-bar {
-    height: 88px;
-    padding: 0 14px;
+    height: calc(88px + env(safe-area-inset-bottom, 0px));
+    padding: 0 14px env(safe-area-inset-bottom, 0px);
   }
   .bb-btn { width: 62px; height: 62px; border-width: 4px; }
   .bb-btn--envelope { font-size: 26px; }
@@ -72,7 +84,7 @@
      a topbar (about, messages) override this back to static inline. */
   .wii-menu-btn {
     position: fixed;
-    bottom: 18px;
+    bottom: calc(18px + env(safe-area-inset-bottom, 0px));
     z-index: 90;
   }
 }

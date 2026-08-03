@@ -49,6 +49,7 @@
   .bb-btn:hover { transform: scale(1.05); }
 }
 .bb-btn:focus-visible { transform: scale(1.05); outline: none; }
+.bb-btn:active { transform: scale(0.94); }
 
 .bb-btn img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
 
