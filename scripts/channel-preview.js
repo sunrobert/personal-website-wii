@@ -1,4 +1,4 @@
-import { playSelect, playHover, playBack } from "./audio.js?v=1785815000";
+import { playSelect, playHover, playBack } from "./audio.js?v=1785825000";
 
 export function showChannelPreview(channel) {
   const overlay = document.createElement("div");

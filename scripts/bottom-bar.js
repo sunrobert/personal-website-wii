@@ -32,7 +32,7 @@ export function renderBottomBar(container) {
 
 export function installBottomBarNav() {
   const flashTo = async (href) => {
-    const { playSelect } = await import("./audio.js?v=1785815000");
+    const { playSelect } = await import("./audio.js?v=1785825000");
     playSelect();
     const flash = document.getElementById("flash-overlay");
     gsap.to(flash, {
