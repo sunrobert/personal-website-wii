@@ -12,10 +12,13 @@ function mkSfx(src) {
 }
 
 export function initAudio() {
+  // Web Audio (NOT html5): an <audio> element registers as system media —
+  // iOS shows the site in the lock-screen music player with pause/scrub
+  // controls. Web Audio stays invisible to the OS player. The mp3 is ~4MB,
+  // decoded in memory after the first user gesture.
   bgm = new Howl({
     src: ["assets/audio/bgm.mp3"],
     loop: true,
-    html5: true,
     volume: 0,
     onloaderror: (_, err) => console.warn("BGM load failed", err),
   });
@@ -45,8 +48,8 @@ export function initAudio() {
 }
 
 function fadeInBgm() {
-  // html5 playback starts asynchronously, so fading on the same tick as play()
-  // races the start and leaves the volume pinned at the `from` value (silent).
+  // Playback start is asynchronous (decode/queue), so fading on the same tick
+  // as play() races the start and can pin volume at the `from` value (silent).
   // Wait for the actual `play` event before ramping the volume up.
   if (bgm.playing()) {
     bgm.fade(bgm.volume(), 0.4, 2000);

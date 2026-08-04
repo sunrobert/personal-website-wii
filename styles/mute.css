@@ -1,6 +1,8 @@
 .mute-btn {
   position: fixed;
-  top: 16px;
+  /* viewport-fit=cover lets the page under the iOS status bar — keep the
+     button below the notch/clock. env() is 0 everywhere else. */
+  top: calc(16px + env(safe-area-inset-top, 0px));
   right: 16px;
   z-index: 70;
   width: 44px;
@@ -18,3 +20,9 @@
 }
 /* Press feedback: the toggle should feel heard. */
 .mute-btn:active { transform: scale(0.92); }
+
+/* Subpages carry the toggle for phones only; desktop subpages stay as-is. */
+body.subpage .mute-btn { display: none; }
+@media (max-width: 700px) {
+  body.subpage .mute-btn { display: block; }
+}

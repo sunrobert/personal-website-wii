@@ -1,6 +1,6 @@
 // Shared script for sub-pages: scaling, back button, audio (mute persisted).
-import { installScaler } from "./scale.js?v=1785815000";
-import { installCursor } from "./cursor.js?v=1785815000";
+import { installScaler } from "./scale.js?v=1785825000";
+import { installCursor } from "./cursor.js?v=1785825000";
 
 installCursor();
 
@@ -8,6 +8,24 @@ const stage = document.querySelector(".subpage-stage");
 if (stage) installScaler(stage);
 
 const STORAGE_KEY = "wiiMuted";
+
+// Mute toggle (rendered on subpages for mobile): flips the shared flag that
+// every play() call reads at click time. No bgm runs on subpages.
+const muteBtn = document.getElementById("mute-toggle");
+if (muteBtn) {
+  const syncIcon = () => {
+    const m = localStorage.getItem(STORAGE_KEY) === "1";
+    muteBtn.textContent = m ? "🔇" : "🔊";
+    muteBtn.setAttribute("aria-pressed", String(m));
+  };
+  syncIcon();
+  muteBtn.addEventListener("click", () => {
+    const m = localStorage.getItem(STORAGE_KEY) === "1";
+    localStorage.setItem(STORAGE_KEY, m ? "0" : "1");
+    syncIcon();
+  });
+}
+
 const backBtn = document.querySelector(".wii-menu-btn");
 if (backBtn) {
   backBtn.addEventListener("click", () => {

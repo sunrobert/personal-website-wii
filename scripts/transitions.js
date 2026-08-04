@@ -1,5 +1,5 @@
-import { playSelect } from "./audio.js?v=1785815000";
-import { showChannelPreview } from "./channel-preview.js?v=1785815000";
+import { playSelect } from "./audio.js?v=1785825000";
+import { showChannelPreview } from "./channel-preview.js?v=1785825000";
 
 const prefersReducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
