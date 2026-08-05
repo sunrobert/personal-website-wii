@@ -26,21 +26,24 @@
   #channels {
     position: static;
     grid-template-columns: repeat(2, 1fr);
-    gap: 18px 10px;
+    grid-auto-rows: 1fr; /* wall to wall: 3 rows split the full height */
+    gap: 14px 10px;
     padding: 14px 14px calc(102px + env(safe-area-inset-bottom, 0px));
-    /* Compact centered cluster: tight row gaps, the leftover height splits
-       evenly above and below the block instead of stretching between rows. */
-    align-content: center;
+    align-content: stretch;
     min-height: 100vh;
     min-height: 100dvh; /* track the real visible height as browser chrome collapses */
   }
   .channel {
-    border-radius: 16px;
-    /* Match the desktop channel proportion exactly; the grid's space-evenly
-       distribution absorbs the leftover height between rows. */
-    aspect-ratio: 16 / 9;
+    border-radius: 18px;
+    aspect-ratio: auto; /* tiles fill their grid cell */
+    height: 100%;
   }
-  .channel__title { font-size: 16px; top: 8px; }
+  /* Tall cells: center the title so the tile doesn't read as empty below it. */
+  .channel__title {
+    font-size: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
   .channel--empty .channel__watermark { font-size: 26px; }
   /* Phone: cap the grid at 6 tiles (3 rows of 2) — hide only EMPTY tiles
      past the 6th slot, so future real channels always stay visible. */
