@@ -195,6 +195,8 @@
       color: #2f3339;
       font-style: italic;
     }
+    /* CJK has no italic tradition — synthetic slant just degrades glyphs. */
+    .bm-quote-text:lang(zh) { font-style: normal; line-height: 1.7; }
     .bm-quote-author {
       padding: 10px 16px 16px;
       font-size: 13px;
@@ -401,6 +403,28 @@
       { type: "video", title: "Kingdom of Heaven — “A King May Move a Man”", yt: "ykGP3-vnyOU", sd: true },
       { type: "video", title: "毒舌大状 (A Guilty Conscience) — 黄子华 电影金句", yt: "Vu9A4OF_YSY", sd: true },
       { type: "video", title: "Tokyo Taxi (2025) — Trailer, dir. Yoji Yamada", yt: "vYECkW7Xlow" },
+      { type: "video", title: "Devi (1960) — dir. Satyajit Ray, with English subtitles", yt: "kOeurcMEhMs", start: 2984 },
+      { type: "article", title: "The Guide to Getting a Job with Cold Email", url: "https://x.com/benln/status/2018035287851704556",
+        source: "Ben Lang on X" },
+      { type: "article", title: "POPEYE Web", url: "https://popeyemagazine.jp/",
+        source: "popeyemagazine.jp", note: "The “Magazine for City Boys.”" },
+      { type: "article", title: "DAOs, A Canon", url: "https://a16zcrypto.com/posts/article/dao-canon/#section--2",
+        source: "a16zcrypto.com" },
+      { type: "article", title: "Commonware", url: "https://commonware.xyz/",
+        source: "commonware.xyz" },
+      { type: "article", title: "Nakamura Tokichi Honten", url: "https://anyhowstudio.com/project/nakamura-tokichi-honten/",
+        source: "anyhowstudio.com" },
+      { type: "article", title: "Curations Supply", url: "https://curations.supply/",
+        source: "curations.supply", note: "A directory of curations supplied by experts." },
+      { type: "quote", lang: "zh",
+        text: "横空出世，莽昆仑，阅尽人间春色。飞起玉龙三百万，搅得周天寒彻。夏日消融，江河横溢，人或为鱼鳖。千秋功罪，谁人曾与评说？",
+        author: "毛泽东《念奴娇·昆仑》（节选）" },
+      { type: "quote", lang: "zh",
+        text: "想人生，美景良辰堪惜。",
+        author: "聂冠卿《多丽·李良定公席上赋》" },
+      { type: "quote", text: "In a mad world, only the mad are sane.", author: "Akira Kurosawa" },
+      { type: "quote", text: "Possessing by letting go of things was a secret of ownership unknown to youth.",
+        author: "Yukio Mishima, The Temple of Dawn" },
     ];
 
     // --- Render ---------------------------------------------------------
@@ -436,8 +460,8 @@
       return `
         <div class="bm-card" data-type="quote">
           <div class="bm-quote-mark">&#8220;</div>
-          <div class="bm-quote-text">${b.text}</div>
-          <div class="bm-quote-author">— ${b.author}</div>
+          <div class="bm-quote-text"${b.lang ? ` lang="${b.lang}"` : ""}>${b.text}</div>
+          <div class="bm-quote-author"${b.lang ? ` lang="${b.lang}"` : ""}>— ${b.author}</div>
         </div>`;
     }).join("");
 
