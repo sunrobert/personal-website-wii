@@ -1,4 +1,7 @@
+.agents/
+.claude/
 .DS_Store
-node_modules/
-.vercel/
 .gstack/
+.vercel/
+node_modules/
+skills-lock.json
