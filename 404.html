@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>404 — Robert Sun</title>
+  <meta name="robots" content="noindex" />
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg" />
+  <link rel="stylesheet" href="/styles/main.css?v=1785990000" />
+  <link rel="stylesheet" href="/styles/subpage.css?v=1785990000" />
+  <link rel="stylesheet" href="/styles/mobile.css?v=1785990000" />
+  <style>
+    .subpage-stage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 28px;
+    }
+    /* An empty channel slot, big — the thing you clicked into doesn't exist. */
+    .nf-tile {
+      width: 460px;
+      aspect-ratio: 16 / 9;
+      border-radius: 22px;
+      background:
+        radial-gradient(circle at 30% 30%, rgba(255,255,255,0.6), transparent 60%),
+        #dedede;
+      box-shadow:
+        inset 0 0 0 1px rgba(0,0,0,0.06),
+        inset 0 -2px 0 0 rgba(0,0,0,0.04);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(120, 120, 120, 0.35);
+      font-weight: 700;
+      font-size: 64px;
+      letter-spacing: 0.05em;
+    }
+    .nf-title {
+      font-size: 34px;
+      font-weight: 700;
+      color: #333;
+      text-shadow: 0 1px 0 rgba(255,255,255,0.8);
+    }
+    .nf-sub {
+      font-size: 17px;
+      color: #6b707a;
+      margin-top: -18px;
+    }
+    .wii-menu-btn { position: static; transform: none; }
+    @media (hover: hover) and (pointer: fine) {
+      .subpage-stage .wii-menu-btn:hover { transform: translateY(-2px) scale(1.03); }
+    }
+    .subpage-stage .wii-menu-btn:focus-visible { transform: translateY(-2px) scale(1.03); outline: none; }
+    .subpage-stage .wii-menu-btn:active { transform: scale(0.97); }
+    @media (max-width: 700px) {
+      .subpage-stage { min-height: 100dvh; padding: 20px 16px; justify-content: center; }
+      .nf-tile { width: 100%; font-size: 44px; }
+      .nf-title { font-size: 24px; }
+      .nf-sub { font-size: 15px; }
+    }
+  </style>
+</head>
+<body class="subpage">
+  <div id="letterbox">
+    <div class="subpage-stage">
+      <div id="flash-overlay"></div>
+      <div class="nf-tile">404</div>
+      <h1 class="nf-title">Channel Not Found</h1>
+      <p class="nf-sub">This channel doesn't exist, or it was removed from the menu.</p>
+      <button class="wii-menu-btn" data-channel-id="__404">Wii Menu</button>
+    </div>
+  </div>
+
+  <script>
+    // Pre-paint scale + arrival flash — mirrors scripts/scale.js applyScale
+    // (constants must stay in sync). Same bootstrap as every other subpage.
+    (function () {
+      var mobile = window.matchMedia("(max-width: 700px)").matches;
+      var el = document.querySelector(".subpage-stage");
+      if (!el) return;
+      if (!mobile) {
+        var fit = Math.min(window.innerWidth / 1280, window.innerHeight / 720);
+        el.style.transform = "scale(" + fit + ")";
+      }
+      var f = document.getElementById("flash-overlay");
+      if (!f) return;
+      f.style.opacity = "1";
+      requestAnimationFrame(function () {
+        f.style.transition = "opacity 150ms cubic-bezier(0.23, 1, 0.32, 1)";
+        f.style.opacity = "0";
+        setTimeout(function () { f.style.transition = ""; }, 250);
+      });
+    })();
+  </script>
+  <script defer src="/assets/vendor/gsap.min.js?v=1785990000"></script>
+  <script defer src="/assets/vendor/howler.min.js?v=1785990000"></script>
+  <script type="module" src="/scripts/subpage.js?v=1785990000"></script>
+</body>
+</html>
