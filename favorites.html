@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Favorites — Robert Sun</title>
+  <meta name="description" content="Robert Sun's favorites — videos, articles, books, and quotes worth sharing." />
+  <meta name="robots" content="index, follow, noai, noimageai" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Robert Sun" />
+  <meta property="og:title" content="Favorites — Robert Sun" />
+  <meta property="og:description" content="Videos, articles, books, and quotes worth sharing." />
+  <meta property="og:image" content="https://robertsun.vercel.app/assets/avatar.jpg" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Favorites — Robert Sun" />
+  <meta name="twitter:description" content="Videos, articles, books, and quotes worth sharing." />
+  <meta name="twitter:image" content="https://robertsun.vercel.app/assets/avatar.jpg" />
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="stylesheet" href="styles/main.css?v=1786300000" />
+  <link rel="stylesheet" href="styles/subpage.css?v=1786300000" />
+  <link rel="stylesheet" href="styles/mute.css?v=1786300000" />
+  <link rel="stylesheet" href="styles/mobile.css?v=1786300000" />
+  <style>
+    /* Taller collection window: trimmed chrome, panel flexes to fill the
+       stage instead of the stock calc(100% - 160px) box. */
+    /* Bottom padding reserves the Wii Menu button's zone: 30px offset +
+       53px button + 16px breathing room. The panel can never touch it. */
+    .subpage-stage { display: flex; flex-direction: column; padding: 26px 48px 100px; }
+    .subpage-header { flex-wrap: wrap; row-gap: 12px; margin-bottom: 14px; }
+    .subpage-icon { width: 64px; height: 64px; }
+    .subpage-title { font-size: 38px; }
+
+    /* --- Wii-style segmented filter (sliding pill indicator) ------------- */
+    .bm-tabs {
+      position: relative;
+      display: flex;
+      gap: 2px;
+      margin-left: auto;
+      padding: 4px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #d6d9de, #c7cad0);
+      box-shadow:
+        inset 0 1px 2px rgba(0,0,0,0.18),
+        0 1px 0 rgba(255,255,255,0.7);
+    }
+    .bm-tab {
+      position: relative;
+      z-index: 1;
+      border: none;
+      background: transparent;
+      font: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      color: #5a5f66;
+      padding: 8px 18px;
+      border-radius: 999px;
+      cursor: pointer;
+      /* color change only — the moving part is the indicator below */
+      transition: color 150ms ease, transform 150ms var(--ease-out-strong);
+    }
+    .bm-tab:active { transform: scale(0.96); }
+    .bm-tab[aria-selected="true"] { color: #2a6fae; }
+    .bm-tab-indicator {
+      position: absolute;
+      top: 4px;
+      left: 0;
+      height: calc(100% - 8px);
+      border-radius: 999px;
+      background: linear-gradient(180deg, #ffffff, #eef1f4);
+      border: 2px solid rgba(111, 182, 255, 0.8);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+      /* transform+width transition: interruptible — rapid tab taps retarget
+         smoothly instead of restarting from zero */
+      transition: transform 200ms var(--ease-out-strong), width 200ms var(--ease-out-strong);
+    }
+
+    /* --- Masonry of cards ------------------------------------------------ */
+    .subpage-panel { padding: 20px; flex: 1; min-height: 0; height: auto; }
+    .bm-columns { columns: 3; column-gap: 14px; }
+    .bm-card {
+      break-inside: avoid;
+      margin-bottom: 14px;
+      background: #fff;
+      border: 1px solid rgba(0,0,0,0.07);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 5px 12px -6px rgba(0,0,0,0.12);
+      display: block;
+      width: 100%;
+      text-align: left;
+      font: inherit;
+      color: inherit;
+      text-decoration: none;
+      padding: 0;
+      cursor: pointer;
+      /* Entry: staggered fade-up. Nothing appears from nothing — cards start
+         at 98% scale and slight offset, never from scale(0). The per-card
+         stagger delay is set inline by JS and CLEARED after the entrance, so
+         hover/press feedback is always instant. */
+      opacity: 0;
+      transform: translateY(8px) scale(0.98);
+      transition:
+        opacity 300ms var(--ease-out-strong),
+        transform 300ms var(--ease-out-strong),
+        box-shadow 180ms ease;
+    }
+    .bm-card.entered {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    /* Quotes aren't clickable — no pointer, no lift, no press. */
+    .bm-card[data-type="quote"], .bm-card[data-type="book"] { cursor: default; }
+    @media (hover: hover) and (pointer: fine) {
+      .bm-card.entered:not([data-type="quote"]):not([data-type="book"]):hover {
+        transform: translateY(-2px);
+        box-shadow: 0 3px 8px rgba(0,0,0,0.12), 0 14px 28px -10px rgba(0,0,0,0.2);
+      }
+    }
+    .bm-card.entered:not([data-type="quote"]):not([data-type="book"]):active { transform: scale(0.98); }
+    .bm-card:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(111, 182, 255, 0.7), 0 5px 12px -6px rgba(0,0,0,0.12);
+    }
+    .bm-card[hidden] { display: none; }
+
+    .bm-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 999px;
+      margin: 12px 0 0 12px;
+    }
+    .bm-badge--video   { background: #ffe9ec; color: #c0392b; }
+    .bm-badge--article { background: #e7f1fb; color: #2a6fae; }
+    .bm-badge--quote   { background: #f3eefc; color: #7a4fc0; }
+    .bm-badge--book    { background: #e9f5ec; color: #2e7d46; }
+
+    .bm-thumb {
+      display: block; /* spans: width/aspect-ratio need a block box */
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      background: #1a1d22;
+      margin-top: 10px;
+    }
+    .bm-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .bm-play {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .bm-play::after {
+      content: "";
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.92) url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M9 6.5v11l9-5.5z' fill='%232f3339'/></svg>") center/26px no-repeat;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+      transition: transform 180ms var(--ease-out-strong);
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .bm-card:hover .bm-play::after { transform: scale(1.08); }
+    }
+
+    .bm-body { display: block; padding: 12px 14px 14px; }
+    .bm-title {
+      display: block;
+      font-size: 15.5px;
+      font-weight: 700;
+      color: #2a2e35;
+      line-height: 1.3;
+    }
+    .bm-note { display: block; margin-top: 6px; font-size: 13px; color: #6b707a; line-height: 1.45; }
+    .bm-source { display: block; margin-top: 8px; font-size: 12px; color: #8a8f97; }
+    .bm-source .arrow { color: #6fb6ff; }
+
+    .bm-book { display: flex; gap: 14px; padding: 10px 14px 14px; }
+    .bm-book-cover {
+      width: 84px;
+      aspect-ratio: 2 / 3;
+      border-radius: 4px;
+      object-fit: cover;
+      flex-shrink: 0;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.18), 0 6px 14px -4px rgba(0,0,0,0.28);
+      background: #1a1a1a;
+    }
+    .bm-book-info { display: flex; flex-direction: column; justify-content: center; gap: 4px; }
+
+    .bm-quote-mark {
+      font-size: 44px;
+      line-height: 0.6;
+      color: #b79ae0;
+      font-family: Georgia, "Times New Roman", serif;
+      padding: 18px 14px 0;
+    }
+    .bm-quote-text {
+      padding: 8px 16px 0;
+      font-size: 16.5px;
+      line-height: 1.5;
+      color: #2f3339;
+      font-style: italic;
+    }
+    /* CJK has no italic tradition — synthetic slant just degrades glyphs. */
+    .bm-quote-text:lang(zh) { font-style: normal; line-height: 1.7; }
+    .bm-quote-author {
+      padding: 10px 16px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #8a8f97;
+    }
+
+    .bm-empty {
+      padding: 60px 0;
+      text-align: center;
+      color: #8a8f97;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      opacity: 1;
+      transition: opacity 200ms ease-out;
+    }
+    @starting-style {
+      .bm-empty { opacity: 0; }
+    }
+
+    /* --- Video lightbox (same enter/exit system as the photo viewer) ----- */
+    .bm-lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.92);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 150ms ease-out, visibility 0s 150ms;
+    }
+    .bm-lightbox.open {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      transition: opacity 200ms var(--ease-out-strong), visibility 0s;
+    }
+    .bm-lightbox-stage {
+      width: min(92vw, 1200px);
+      aspect-ratio: 16 / 9;
+      max-height: 86vh;
+      transform: scale(0.97);
+      transition: transform 150ms ease-out;
+    }
+    .bm-lightbox.open .bm-lightbox-stage {
+      transform: scale(1);
+      transition: transform 200ms var(--ease-out-strong);
+    }
+    .bm-lightbox-stage iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      border-radius: 8px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      background: #000;
+    }
+    .bm-lightbox-close {
+      position: absolute;
+      top: 20px;
+      right: 24px;
+      width: 44px;
+      height: 44px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: #fff;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 150ms ease, transform 150ms var(--ease-out-strong);
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .bm-lightbox-close:hover { background: rgba(255,255,255,0.25); transform: scale(1.05); }
+    }
+    .bm-lightbox-close:active { transform: scale(0.94); }
+
+    @media (prefers-reduced-motion: reduce) {
+      .bm-card { transform: none; }
+      .bm-card.entered { transition: opacity 200ms ease; transition-delay: 0ms; }
+      .bm-tab-indicator { transition: none; }
+      .bm-lightbox-stage, .bm-lightbox.open .bm-lightbox-stage { transform: none; transition: none; }
+    }
+
+    /* --- Mobile ----------------------------------------------------------- */
+    @media (max-width: 700px) {
+      .subpage-header { flex-direction: column; align-items: flex-start; }
+      .bm-tabs { margin-left: 0; width: 100%; justify-content: space-between; }
+      .bm-tab { padding: 8px 6px; font-size: 13px; flex: 1; }
+      .subpage-panel { padding: 14px; }
+      .bm-columns { columns: 1; }
+    }
+  </style>
+</head>
+<body class="subpage">
+  <div id="letterbox">
+    <div class="subpage-stage">
+      <div id="flash-overlay"></div>
+      <header class="subpage-header">
+        <img class="subpage-icon" src="assets/channels/favorites.png" alt="" />
+        <h1 class="subpage-title">Favorites</h1>
+        <div class="bm-tabs" role="tablist" aria-label="Filter favorites">
+          <span class="bm-tab-indicator" aria-hidden="true"></span>
+          <button class="bm-tab" role="tab" data-filter="all" aria-selected="true">All</button>
+          <button class="bm-tab" role="tab" data-filter="video" aria-selected="false">Videos</button>
+          <button class="bm-tab" role="tab" data-filter="article" aria-selected="false">Articles</button>
+          <button class="bm-tab" role="tab" data-filter="quote" aria-selected="false">Quotes</button>
+          <button class="bm-tab" role="tab" data-filter="book" aria-selected="false">Books</button>
+        </div>
+      </header>
+      <section class="subpage-panel">
+        <div class="bm-columns" id="bm-columns"></div>
+        <div class="bm-empty" id="bm-empty" hidden>Nothing here yet.</div>
+      </section>
+      <button class="wii-menu-btn" data-channel-id="favorites">Wii Menu</button>
+    </div>
+  </div>
+
+  <script>
+    // Pre-paint scale + arrival flash — mirrors scripts/scale.js applyScale
+    // (constants must stay in sync). Runs inline so the first painted frame is
+    // already at the correct zoom, and so pages arrive from the same white the
+    // previous page flashed out to — content is fully painted under the
+    // overlay from frame 1, with zero dependence on CDN script latency.
+    (function () {
+      var mobile = window.matchMedia("(max-width: 700px)").matches;
+      var el = document.getElementById("stage") || document.querySelector(".subpage-stage");
+      if (!el) return;
+      var menu = el.id === "stage";
+      if (!mobile) {
+        var w = menu ? 985 : 1280, h = menu ? 554 : 720;
+        var vh = window.innerHeight - (menu ? 100 : 0);
+        var fit = Math.min(window.innerWidth / w, vh / h);
+        el.style.transform = "scale(" + (menu ? fit * 1.2 : fit) + ")";
+      }
+      var f = document.getElementById("flash-overlay");
+      if (!f) return;
+      if (menu) {
+        // Returning from a subpage: hold the white until the zoom-out fades it.
+        var returning = false;
+        try { returning = !!sessionStorage.getItem("wiiReturn"); } catch (_) {}
+        if (location.search.indexOf("return=") !== -1) returning = true;
+        if (returning) {
+          f.style.opacity = "1";
+          // Safety: if modules stall on a slow network, don't stay white.
+          setTimeout(function () {
+            if (getComputedStyle(f).opacity === "1") {
+              f.style.transition = "opacity 300ms cubic-bezier(0.23, 1, 0.32, 1)";
+              f.style.opacity = "0";
+            }
+          }, 2500);
+        }
+      } else {
+        // Subpage arrival: fade in from white, symmetric with the white-out exit.
+        f.style.opacity = "1";
+        requestAnimationFrame(function () {
+          f.style.transition = "opacity 150ms cubic-bezier(0.23, 1, 0.32, 1)";
+          f.style.opacity = "0";
+          setTimeout(function () { f.style.transition = ""; }, 250);
+        });
+      }
+    })();
+  </script>
+
+  <!-- Video lightbox -->
+  <div class="bm-lightbox" id="bm-lightbox" aria-hidden="true">
+    <button class="bm-lightbox-close" id="bm-lb-close" aria-label="Close">&times;</button>
+    <div class="bm-lightbox-stage" id="bm-lb-stage"></div>
+  </div>
+
+  <script>
+    // ------------------------------------------------------------------
+    // The collection. Three kinds of entries:
+    //   { type: "video",   title, yt: "<youtube id>", note?, start? (seconds) }
+    //   { type: "article", title, url, source, note? }
+    //   { type: "quote",   text, author }
+    //   { type: "book",    title, author, cover }
+    // ------------------------------------------------------------------
+    const BOOKMARKS = [
+      { type: "article", title: "JAL 76/88 — Greg Girard", url: "https://www.greggirard.com/jal-76-88/",
+        source: "greggirard.com", note: "Tokyo photographed at night, 1976–88." },
+      { type: "video", title: "河南说唱之神 — 《工厂》 (The Factory) Official MV", yt: "M-cQ_m5O9oc" },
+      { type: "article", title: "Interiors — Willem Verbeeck", url: "https://www.willemverbeeck.com/work/interiors-cpfny-6bdts",
+        source: "willemverbeeck.com" },
+      { type: "article", title: "House Hunting — Todd Hido", url: "http://www.toddhido.com/househunting",
+        source: "toddhido.com", note: "The night-lit suburban houses series." },
+      { type: "video", title: "京剧《穆桂英挂帅》— 猛听得金鼓响 (Mu Guiying Takes Command)", yt: "iAnh-uJYyyM" },
+      { type: "article", title: "how to enter side doors — maja", url: "https://velvetnoise.substack.com/p/how-to-enter-side-doors",
+        source: "velvetnoise.substack.com" },
+      { type: "video", title: "Why Palpatine Is The Greatest Movie Villain Ever", yt: "LXsYcdXaa7I" },
+      { type: "video", title: "Ikiru (1952) — The Gondola Song", yt: "s-U1UgbiDUU", sd: true },
+      { type: "video", title: "Matt Smith's Regeneration — Speech of Change (Doctor Who)", yt: "GtN3Qb3yvvM", sd: true },
+      { type: "video", title: "Žižek, Coca-Cola, and Kinder Eggs", yt: "vydwrn_TQow", sd: true },
+      { type: "video", title: "Akira Kurosawa Gives Writing Advice", yt: "eC2obaQcoUQ" },
+      { type: "video", title: "Breaking Point (2005) — CBC Documentary, Part 1", yt: "Fl7lOundk4Y", sd: true,
+        note: "The 1995 Quebec referendum." },
+      { type: "video", title: "Breaking Point (2005) — CBC Documentary, Part 2", yt: "nnF46gRSPig", sd: true, start: 2082 },
+      { type: "video", title: "My Favorite Chungking Express Clip", yt: "J57YCiTwoJE" },
+      { type: "video", title: "Hideaki Anno — “what parts don't you like?”", yt: "lGVE2bJCL-Y", sd: true },
+      { type: "video", title: "The Seventh Seal — Confession to Death", yt: "s1ZAMiW4yEQ" },
+      { type: "video", title: "Kingdom of Heaven — “A King May Move a Man”", yt: "ykGP3-vnyOU", sd: true },
+      { type: "video", title: "毒舌大状 (A Guilty Conscience) — 黄子华 电影金句", yt: "Vu9A4OF_YSY", sd: true },
+      { type: "video", title: "Tokyo Taxi (2025) — Trailer, dir. Yoji Yamada", yt: "vYECkW7Xlow" },
+      { type: "video", title: "Devi (1960) — dir. Satyajit Ray, with English subtitles", yt: "kOeurcMEhMs", start: 2984 },
+      { type: "article", title: "The Guide to Getting a Job with Cold Email", url: "https://x.com/benln/status/2018035287851704556",
+        source: "Ben Lang on X" },
+      { type: "article", title: "POPEYE Web", url: "https://popeyemagazine.jp/",
+        source: "popeyemagazine.jp", note: "The “Magazine for City Boys.”" },
+      { type: "article", title: "DAOs, A Canon", url: "https://a16zcrypto.com/posts/article/dao-canon/#section--2",
+        source: "a16zcrypto.com" },
+      { type: "article", title: "Commonware", url: "https://commonware.xyz/",
+        source: "commonware.xyz" },
+      { type: "article", title: "Nakamura Tokichi Honten", url: "https://anyhowstudio.com/project/nakamura-tokichi-honten/",
+        source: "anyhowstudio.com" },
+      { type: "article", title: "Curations Supply", url: "https://curations.supply/",
+        source: "curations.supply", note: "A directory of curations supplied by experts." },
+      { type: "quote", lang: "zh",
+        text: "横空出世，莽昆仑，阅尽人间春色。飞起玉龙三百万，搅得周天寒彻。夏日消融，江河横溢，人或为鱼鳖。千秋功罪，谁人曾与评说？",
+        author: "毛泽东《念奴娇·昆仑》（节选）" },
+      { type: "quote", lang: "zh",
+        text: "想人生，美景良辰堪惜。",
+        author: "聂冠卿《多丽·李良定公席上赋》" },
+      { type: "quote", text: "In a mad world, only the mad are sane.", author: "Akira Kurosawa" },
+      { type: "quote", text: "Possessing by letting go of things was a secret of ownership unknown to youth.",
+        author: "Yukio Mishima, The Temple of Dawn" },
+      { type: "book", title: "Hamlet", author: "William Shakespeare", cover: "assets/books/hamlet.jpg" },
+      { type: "book", title: "The Prince", author: "Niccolò Machiavelli", cover: "assets/books/prince.jpg" },
+      { type: "book", title: "Chip War", author: "Chris Miller", cover: "assets/books/chip-war.jpg" },
+      { type: "book", title: "Meditations", author: "Marcus Aurelius", cover: "assets/books/meditations.jpg" },
+      { type: "book", title: "Principles for Dealing with the Changing World Order", author: "Ray Dalio", cover: "assets/books/principles.jpg" },
+      { type: "book", title: "Tao Te Ching", author: "Lao Tzu", cover: "assets/books/tao.jpg" },
+      { type: "book", title: "The Republic", author: "Plato", cover: "assets/books/republic.jpg" },
+      { type: "book", title: "The Creative Act", author: "Rick Rubin", cover: "assets/books/creative-act.jpg" },
+    ];
+
+    // --- Render ---------------------------------------------------------
+    const columns = document.getElementById("bm-columns");
+    columns.innerHTML = BOOKMARKS.map((b, i) => {
+      if (b.type === "video") {
+        return `
+          <button class="bm-card" data-type="video" data-yt="${b.yt}"${b.start ? ` data-start="${b.start}"` : ""} aria-label="Play: ${b.title}">
+            <span class="bm-badge bm-badge--video">&#9654; Video</span>
+            <span class="bm-thumb">
+              <img src="https://i.ytimg.com/vi/${b.yt}/${b.sd ? "mqdefault" : "hq720"}.jpg" alt="" loading="lazy"
+                onload="if(this.naturalWidth<300&&!this.src.includes('mqdefault'))this.src='https://i.ytimg.com/vi/${b.yt}/mqdefault.jpg'"
+                onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/${b.yt}/mqdefault.jpg'" />
+              <span class="bm-play"></span>
+            </span>
+            <span class="bm-body">
+              <span class="bm-title">${b.title}</span>
+              ${b.note ? `<span class="bm-note">${b.note}</span>` : ""}
+            </span>
+          </button>`;
+      }
+      if (b.type === "article") {
+        return `
+          <a class="bm-card" data-type="article" href="${b.url}" target="_blank" rel="noopener">
+            <span class="bm-badge bm-badge--article">&#10022; Article</span>
+            <span class="bm-body">
+              <span class="bm-title">${b.title}</span>
+              ${b.note ? `<span class="bm-note">${b.note}</span>` : ""}
+              <span class="bm-source">${b.source} <span class="arrow">&#8599;</span></span>
+            </span>
+          </a>`;
+      }
+      if (b.type === "book") {
+        return `
+          <div class="bm-card" data-type="book">
+            <span class="bm-badge bm-badge--book">&#9636; Book</span>
+            <span class="bm-book">
+              <img class="bm-book-cover" src="${b.cover}" alt="" loading="lazy" />
+              <span class="bm-book-info">
+                <span class="bm-title">${b.title}</span>
+                <span class="bm-note">${b.author}</span>
+              </span>
+            </span>
+          </div>`;
+      }
+      return `
+        <div class="bm-card" data-type="quote">
+          <div class="bm-quote-mark">&#8220;</div>
+          <div class="bm-quote-text"${b.lang ? ` lang="${b.lang}"` : ""}>${b.text}</div>
+          <div class="bm-quote-author"${b.lang ? ` lang="${b.lang}"` : ""}>— ${b.author}</div>
+        </div>`;
+    }).join("");
+
+    const cards = Array.from(columns.querySelectorAll(".bm-card"));
+
+    // Staggered entrance (40ms apart). Uses transitions, not keyframes, so a
+    // filter change mid-flight retargets smoothly instead of restarting.
+    // The stagger delay is inline and cleared once the card has entered —
+    // otherwise every later hover/press would inherit the delay.
+    function enterCards(list, stepMs = 40) {
+      list.forEach((c, i) => {
+        c.classList.remove("entered");
+        c.style.transitionDelay = `${i * stepMs}ms`;
+      });
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        list.forEach((c) => {
+          c.classList.add("entered");
+          c.addEventListener("transitionend", function done(e) {
+            if (e.propertyName !== "opacity") return;
+            c.style.transitionDelay = "0ms";
+            c.removeEventListener("transitionend", done);
+          });
+        });
+      }));
+    }
+    enterCards(cards);
+
+    // --- Filter tabs ------------------------------------------------------
+    const tabs = Array.from(document.querySelectorAll(".bm-tab"));
+    const indicator = document.querySelector(".bm-tab-indicator");
+    function moveIndicator(tab) {
+      indicator.style.width = tab.offsetWidth + "px";
+      indicator.style.transform = `translateX(${tab.offsetLeft}px)`;
+    }
+    // Position on load (after layout).
+    requestAnimationFrame(() => moveIndicator(tabs[0]));
+    window.addEventListener("resize", () => {
+      const active = tabs.find((t) => t.getAttribute("aria-selected") === "true");
+      if (active) moveIndicator(active);
+    });
+
+    const emptyMsg = document.getElementById("bm-empty");
+    tabs.forEach((tab) => tab.addEventListener("click", () => {
+      tabs.forEach((t) => t.setAttribute("aria-selected", t === tab ? "true" : "false"));
+      moveIndicator(tab);
+      const filter = tab.dataset.filter;
+      const visible = [];
+      cards.forEach((c) => {
+        const show = filter === "all" || c.dataset.type === filter;
+        c.hidden = !show;
+        if (show) visible.push(c);
+      });
+      emptyMsg.hidden = visible.length > 0;
+      enterCards(visible); // quick re-stagger of what remains
+    }));
+
+    // Arrow keys move between filters (roving selection on the tablist).
+    document.querySelector(".bm-tabs").addEventListener("keydown", (e) => {
+      if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+      e.preventDefault();
+      const i = tabs.findIndex((t) => t.getAttribute("aria-selected") === "true");
+      const next = tabs[(i + (e.key === "ArrowRight" ? 1 : -1) + tabs.length) % tabs.length];
+      next.click();
+      next.focus();
+    });
+
+    // --- Video lightbox ---------------------------------------------------
+    const lb = document.getElementById("bm-lightbox");
+    const lbStage = document.getElementById("bm-lb-stage");
+    const lbClose = document.getElementById("bm-lb-close");
+
+    let lastFocus = null;
+    function openVideo(yt, start) {
+      lastFocus = document.activeElement;
+      lbStage.innerHTML = `<iframe
+        src="https://www.youtube-nocookie.com/embed/${yt}?autoplay=1&rel=0${start ? `&start=${start}` : ""}"
+        title="Video player" allow="autoplay; encrypted-media; picture-in-picture"
+        allowfullscreen></iframe>`;
+      lb.classList.add("open");
+      lb.setAttribute("aria-hidden", "false");
+      lbClose.focus();
+    }
+    function closeVideo() {
+      lb.classList.remove("open");
+      lb.setAttribute("aria-hidden", "true");
+      // Return focus to the card that opened the player.
+      if (lastFocus && document.contains(lastFocus)) lastFocus.focus();
+      // Remove the iframe after the exit fade — also stops playback.
+      setTimeout(() => {
+        if (!lb.classList.contains("open")) lbStage.innerHTML = "";
+      }, 180);
+    }
+    columns.addEventListener("click", (e) => {
+      const card = e.target.closest('.bm-card[data-type="video"]');
+      if (card) openVideo(card.dataset.yt, card.dataset.start);
+    });
+    lbClose.addEventListener("click", closeVideo);
+    lb.addEventListener("click", (e) => { if (e.target === lb) closeVideo(); });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && lb.classList.contains("open")) closeVideo();
+    });
+  </script>
+
+  <button id="mute-toggle" class="mute-btn" aria-label="Toggle sound" aria-pressed="false">🔊</button>
+  <script defer src="assets/vendor/gsap.min.js?v=1786300000"></script>
+  <script defer src="assets/vendor/howler.min.js?v=1786300000"></script>
+  <script type="module" src="scripts/subpage.js?v=1786300000"></script>
+</body>
+</html>
