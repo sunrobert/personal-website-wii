@@ -1,6 +1,6 @@
 // Shared script for sub-pages: scaling, back button, audio (mute persisted).
-import { installScaler } from "./scale.js?v=1786300000";
-import { installCursor } from "./cursor.js?v=1786300000";
+import { installScaler } from "./scale.js?v=1786310000";
+import { installCursor } from "./cursor.js?v=1786310000";
 
 installCursor();
 
