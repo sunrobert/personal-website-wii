@@ -431,6 +431,8 @@
         source: "anyhowstudio.com" },
       { type: "article", title: "Curations Supply", url: "https://curations.supply/",
         source: "curations.supply", note: "A directory of curations supplied by experts." },
+      { type: "article", title: "Undercurrents — Ian Teh", url: "https://www.ianteh.com/undercurrents-1/ua9i6kpsvc9clsh6x4fgonnvvun3os",
+        source: "ianteh.com", note: "Five stories photographed in China, 1999–2008." },
       { type: "quote", lang: "zh",
         text: "横空出世，莽昆仑，阅尽人间春色。飞起玉龙三百万，搅得周天寒彻。夏日消融，江河横溢，人或为鱼鳖。千秋功罪，谁人曾与评说？",
         author: "毛泽东《念奴娇·昆仑》（节选）" },
@@ -451,8 +453,16 @@
     ];
 
     // --- Render ---------------------------------------------------------
+    // Fisher-Yates shuffle on every visit: the All view scrambles types
+    // across the columns instead of clustering (source order is grouped,
+    // and CSS columns would otherwise turn groups into whole columns).
+    const DECK = [...BOOKMARKS];
+    for (let i = DECK.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [DECK[i], DECK[j]] = [DECK[j], DECK[i]];
+    }
     const columns = document.getElementById("bm-columns");
-    columns.innerHTML = BOOKMARKS.map((b, i) => {
+    columns.innerHTML = DECK.map((b, i) => {
       if (b.type === "video") {
         return `
           <button class="bm-card" data-type="video" data-yt="${b.yt}"${b.start ? ` data-start="${b.start}"` : ""} aria-label="Play: ${b.title}">
