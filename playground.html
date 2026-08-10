@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Playground — Robert Sun</title>
+  <meta name="description" content="Robert Sun's playground — weekend projects that did or didn't go anywhere, and thoughts on each." />
+  <meta name="robots" content="index, follow, noai, noimageai" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Robert Sun" />
+  <meta property="og:title" content="Playground — Robert Sun" />
+  <meta property="og:description" content="Weekend projects that did or didn't go anywhere, and thoughts on each." />
+  <meta property="og:image" content="https://robertsun.vercel.app/assets/avatar.jpg" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Playground — Robert Sun" />
+  <meta name="twitter:description" content="Weekend projects that did or didn't go anywhere, and thoughts on each." />
+  <meta name="twitter:image" content="https://robertsun.vercel.app/assets/avatar.jpg" />
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="stylesheet" href="styles/main.css?v=1786310000" />
+  <link rel="stylesheet" href="styles/subpage.css?v=1786310000" />
+  <link rel="stylesheet" href="styles/mute.css?v=1786310000" />
+  <link rel="stylesheet" href="styles/mobile.css?v=1786310000" />
+  <style>
+    .pg-entry { padding: 22px 0; border-bottom: 1px solid #eee; }
+    .pg-entry:first-child { padding-top: 6px; }
+    .pg-entry:last-child { border-bottom: 0; }
+    .pg-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .pg-name { font-size: 20px; font-weight: 700; color: #2a2e35; }
+    .pg-status {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+    .pg-status--shipped   { background: #e9f5ec; color: #2e7d46; }
+    .pg-status--abandoned { background: #f0f1f3; color: #7a7f87; }
+    .pg-status--tinkering { background: #fff3dd; color: #9a6b00; }
+    .pg-year { margin-left: auto; font-size: 13px; color: #8a8f97; }
+    .pg-desc { margin-top: 8px; font-size: 15.5px; line-height: 1.55; color: #3a3a3a; }
+    .pg-desc a {
+      color: #2a86c0;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(42, 134, 192, 0.35);
+      transition: color 150ms ease-out, border-color 150ms ease-out;
+    }
+    .pg-desc a:hover, .pg-desc a:focus-visible { color: #0a66c2; border-bottom-color: #0a66c2; outline: none; }
+    /* The retrospective — styled as a margin note, the part worth reading. */
+    .pg-thought {
+      margin-top: 12px;
+      padding: 10px 16px;
+      border-left: 3px solid #b6dfc2;
+      background: #f7fbf8;
+      border-radius: 0 10px 10px 0;
+      font-size: 14.5px;
+      line-height: 1.55;
+      color: #55605a;
+      font-style: italic;
+    }
+    @media (max-width: 700px) {
+      .pg-name { font-size: 17px; }
+      .pg-year { flex-basis: 100%; margin-left: 0; }
+      .pg-desc { font-size: 15px; }
+    }
+  </style>
+</head>
+<body class="subpage">
+  <div id="letterbox">
+    <div class="subpage-stage">
+      <div id="flash-overlay"></div>
+      <header class="subpage-header">
+        <img class="subpage-icon" src="assets/channels/playground.png" alt="" />
+        <h1 class="subpage-title">Playground</h1>
+      </header>
+      <section class="subpage-panel">
+        <div id="pg-list"></div>
+      </section>
+      <button class="wii-menu-btn" data-channel-id="playground">Wii Menu</button>
+    </div>
+  </div>
+
+  <script>
+    // ------------------------------------------------------------------
+    // Weekend projects. Statuses: "shipped" | "abandoned" | "tinkering".
+    // `thought` is the retrospective — the honest part.
+    // PLACEHOLDER ENTRIES below (except the first) — replace with yours.
+    // ------------------------------------------------------------------
+    const PROJECTS = [
+      { name: "This Website", year: "2026", status: "shipped",
+        desc: 'A personal site disguised as a Nintendo Wii Menu — channels, zoom transitions, the startup sound, a hand cursor. You are standing in it.',
+        thought: "PLACEHOLDER — what building this taught you / how it felt." },
+      { name: "Example: Abandoned Project", year: "2025", status: "abandoned",
+        desc: "PLACEHOLDER — one line on what it was supposed to be.",
+        thought: "PLACEHOLDER — why it stalled, and what you'd keep from it." },
+      { name: "Example: Something In Progress", year: "2026", status: "tinkering",
+        desc: "PLACEHOLDER — the thing currently eating your weekends.",
+        thought: "PLACEHOLDER — current state of mind about it." },
+    ];
+
+    const STATUS_LABEL = { shipped: "Shipped", abandoned: "Abandoned", tinkering: "Tinkering" };
+    document.getElementById("pg-list").innerHTML = PROJECTS.map((p) => `
+      <article class="pg-entry">
+        <div class="pg-head">
+          <span class="pg-name">${p.name}</span>
+          <span class="pg-status pg-status--${p.status}">${STATUS_LABEL[p.status] || p.status}</span>
+          <span class="pg-year">${p.year}</span>
+        </div>
+        <p class="pg-desc">${p.desc}</p>
+        ${p.thought ? `<div class="pg-thought">${p.thought}</div>` : ""}
+      </article>
+    `).join("");
+  </script>
+
+  <button id="mute-toggle" class="mute-btn" aria-label="Toggle sound" aria-pressed="false">🔊</button>
+  <script>
+    // Pre-paint scale + arrival flash — mirrors scripts/scale.js applyScale
+    // (constants must stay in sync). Same bootstrap as every other subpage.
+    (function () {
+      var mobile = window.matchMedia("(max-width: 700px)").matches;
+      var el = document.querySelector(".subpage-stage");
+      if (!el) return;
+      if (!mobile) {
+        var fit = Math.min(window.innerWidth / 1280, window.innerHeight / 720);
+        el.style.transform = "scale(" + fit + ")";
+      }
+      var f = document.getElementById("flash-overlay");
+      if (!f) return;
+      f.style.opacity = "1";
+      requestAnimationFrame(function () {
+        f.style.transition = "opacity 150ms cubic-bezier(0.23, 1, 0.32, 1)";
+        f.style.opacity = "0";
+        setTimeout(function () { f.style.transition = ""; }, 250);
+      });
+    })();
+  </script>
+  <script defer src="assets/vendor/gsap.min.js?v=1786310000"></script>
+  <script defer src="assets/vendor/howler.min.js?v=1786310000"></script>
+  <script type="module" src="scripts/subpage.js?v=1786310000"></script>
+</body>
+</html>
