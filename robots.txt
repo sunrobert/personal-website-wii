@@ -40,4 +40,4 @@ Disallow: /
 User-agent: *
 Disallow:
 
-Sitemap: https://robertsun.vercel.app/sitemap.xml
+Sitemap: https://robertsun.org/sitemap.xml
