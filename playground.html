@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Playground — Robert Sun</title>
-  <meta name="description" content="Robert Sun's playground, home to all his misc creative endeavours: Proof of Dig, ASCII Weather, onions.lol and this Wii-menu website." />
+  <meta name="description" content="Robert Sun's playground, home to all his misc creative endeavours: Proof of Dig, ASCII Weather and onions.lol." />
   <meta name="robots" content="index, follow, noai, noimageai" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Robert Sun" />
@@ -24,7 +24,7 @@
     .pg-tagline { margin-top: 2px; font-size: 16px; color: #7a7f87; }
     .pg-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap: 24px;
     }
     .pg-card { display: flex; flex-direction: column; min-width: 0; }
@@ -53,6 +53,7 @@
       border-bottom: 1px solid rgba(42, 134, 192, 0.35);
       transition: color 150ms ease-out, border-color 150ms ease-out;
     }
+    .pg-desc a { white-space: nowrap; }
     .pg-link { align-self: flex-start; margin-top: 8px; font-size: 14px; font-weight: 600; }
     .pg-desc a:hover, .pg-desc a:focus-visible,
     .pg-link:hover, .pg-link:focus-visible { color: #0a66c2; border-bottom-color: #0a66c2; outline: none; }
@@ -88,8 +89,6 @@
 
   <script>
     const PROJECTS = [
-      { name: "This website", year: "2026", shot: "wii-site",
-        desc: "A personal site disguised as a Nintendo Wii menu. You're standing in it." },
       { name: "Proof of Dig", year: "2026", shot: "proof-of-dig",
         url: "https://proof-of-dig.vercel.app", cta: "Play",
         desc: "Daily crypto trivia where the obvious answer barely scores and the obscure one strikes gold. Seven prompts, 25 seconds each, new dig every day." },
