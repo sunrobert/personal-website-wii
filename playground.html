@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Playground — Robert Sun</title>
+  <meta name="description" content="Robert Sun's playground, home to all his misc creative endeavours: Proof of Dig, ASCII Weather, onions.lol and this Wii-menu website." />
+  <meta name="robots" content="index, follow, noai, noimageai" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Robert Sun" />
+  <meta property="og:title" content="Playground — Robert Sun" />
+  <meta property="og:description" content="Home to all my misc creative endeavours." />
+  <meta property="og:image" content="https://robertsun.vercel.app/assets/avatar.jpg" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Playground — Robert Sun" />
+  <meta name="twitter:description" content="Home to all my misc creative endeavours." />
+  <meta name="twitter:image" content="https://robertsun.vercel.app/assets/avatar.jpg" />
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
+  <link rel="stylesheet" href="styles/main.css?v=1786300000" />
+  <link rel="stylesheet" href="styles/subpage.css?v=1786300000" />
+  <link rel="stylesheet" href="styles/mute.css?v=1786300000" />
+  <link rel="stylesheet" href="styles/mobile.css?v=1786300000" />
+  <style>
+    .pg-tagline { margin-top: 2px; font-size: 16px; color: #7a7f87; }
+    .pg-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+    .pg-card { display: flex; flex-direction: column; min-width: 0; }
+    .pg-shot {
+      display: block;
+      aspect-ratio: 16 / 10;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #f0f1f3;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.08);
+      transition: transform 160ms ease-out, box-shadow 160ms ease-out;
+    }
+    .pg-shot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    a.pg-shot:hover, a.pg-shot:focus-visible {
+      transform: translateY(-2px);
+      box-shadow: 0 0 0 2px #7cc4f0, 0 6px 16px rgba(0,0,0,0.12);
+      outline: none;
+    }
+    .pg-head { display: flex; align-items: baseline; gap: 8px; margin-top: 14px; }
+    .pg-name { font-size: 18px; font-weight: 700; color: #2a2e35; }
+    .pg-year { margin-left: auto; font-size: 13px; color: #8a8f97; }
+    .pg-desc { margin-top: 6px; font-size: 14px; line-height: 1.5; color: #3a3a3a; }
+    .pg-desc a, .pg-link {
+      color: #2a86c0;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(42, 134, 192, 0.35);
+      transition: color 150ms ease-out, border-color 150ms ease-out;
+    }
+    .pg-link { align-self: flex-start; margin-top: 8px; font-size: 14px; font-weight: 600; }
+    .pg-desc a:hover, .pg-desc a:focus-visible,
+    .pg-link:hover, .pg-link:focus-visible { color: #0a66c2; border-bottom-color: #0a66c2; outline: none; }
+    @media (prefers-reduced-motion: reduce) {
+      .pg-shot { transition: none; }
+      a.pg-shot:hover, a.pg-shot:focus-visible { transform: none; }
+    }
+    @media (max-width: 700px) {
+      .subpage-header { padding-right: 52px; } /* clear the fixed mute button */
+      .pg-tagline { font-size: 14px; }
+      .pg-grid { grid-template-columns: 1fr; gap: 32px; }
+      .pg-desc { font-size: 15px; }
+    }
+  </style>
+</head>
+<body class="subpage">
+  <div id="letterbox">
+    <div class="subpage-stage">
+      <div id="flash-overlay"></div>
+      <header class="subpage-header">
+        <img class="subpage-icon" src="assets/channels/playground.png" alt="" />
+        <div>
+          <h1 class="subpage-title">Playground</h1>
+          <p class="pg-tagline">My playground, home to all my misc creative endeavours.</p>
+        </div>
+      </header>
+      <section class="subpage-panel">
+        <div class="pg-grid" id="pg-list"></div>
+      </section>
+      <button class="wii-menu-btn" data-channel-id="playground">Wii Menu</button>
+    </div>
+  </div>
+
+  <script>
+    const PROJECTS = [
+      { name: "This website", year: "2026", shot: "wii-site",
+        desc: "A personal site disguised as a Nintendo Wii menu. You're standing in it." },
+      { name: "Proof of Dig", year: "2026", shot: "proof-of-dig",
+        url: "https://proof-of-dig.vercel.app", cta: "Play",
+        desc: "Daily crypto trivia where the obvious answer barely scores and the obscure one strikes gold. Seven prompts, 25 seconds each, new dig every day." },
+      { name: "ASCII Weather", year: "2026", shot: "ascii-weather",
+        url: "https://ascii-weather-lac.vercel.app", cta: "Try it",
+        desc: "The weather, drawn in animated ASCII art. My excuse to learn how to ship an iPhone app, with a web version you can try in your browser." },
+      { name: "onions.lol", year: "2026", shot: "onions-lol",
+        url: "https://onions-lol.vercel.app", cta: "Trade",
+        desc: 'Onion futures have been illegal in America since 1958, so we built an exchange to trade them anyway, cash-settled against the real USDA price. Made with <a href="https://github.com/justinli500" target="_blank" rel="noopener">Justin Li</a> at ETHGlobal New York.' },
+    ];
+
+    const ext = 'target="_blank" rel="noopener"';
+    document.getElementById("pg-list").innerHTML = PROJECTS.map((p) => {
+      const img = `<img src="assets/playground/${p.shot}.jpg" alt="${p.name} screenshot" width="800" height="500" loading="lazy" />`;
+      return `
+      <article class="pg-card">
+        ${p.url ? `<a class="pg-shot" href="${p.url}" ${ext} tabindex="-1">${img}</a>` : `<div class="pg-shot">${img}</div>`}
+        <div class="pg-head">
+          <span class="pg-name">${p.name}</span>
+          <span class="pg-year">${p.year}</span>
+        </div>
+        <p class="pg-desc">${p.desc}</p>
+        ${p.url ? `<a class="pg-link" href="${p.url}" ${ext}>${p.cta} &rarr;</a>` : ""}
+      </article>`;
+    }).join("");
+  </script>
+
+  <button id="mute-toggle" class="mute-btn" aria-label="Toggle sound" aria-pressed="false">🔊</button>
+  <script>
+    // Pre-paint scale + arrival flash — mirrors scripts/scale.js applyScale
+    // (constants must stay in sync). Same bootstrap as every other subpage.
+    (function () {
+      var mobile = window.matchMedia("(max-width: 700px)").matches;
+      var el = document.querySelector(".subpage-stage");
+      if (!el) return;
+      if (!mobile) {
+        var fit = Math.min(window.innerWidth / 1280, window.innerHeight / 720);
+        el.style.transform = "scale(" + fit + ")";
+      }
+      var f = document.getElementById("flash-overlay");
+      if (!f) return;
+      f.style.opacity = "1";
+      requestAnimationFrame(function () {
+        f.style.transition = "opacity 150ms cubic-bezier(0.23, 1, 0.32, 1)";
+        f.style.opacity = "0";
+        setTimeout(function () { f.style.transition = ""; }, 250);
+      });
+    })();
+  </script>
+  <script defer src="assets/vendor/gsap.min.js?v=1786300000"></script>
+  <script defer src="assets/vendor/howler.min.js?v=1786300000"></script>
+  <script type="module" src="scripts/subpage.js?v=1786300000"></script>
+</body>
+</html>
