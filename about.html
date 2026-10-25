@@ -92,6 +92,7 @@
       letter-spacing: 0.03em;
     }
     .about-clock .ampm { font-size: 13px; color: #8a8f97; }
+    .about-clock .d1 { margin-left: -0.49em; }
 
     /* Two-column body: hero left, bio panel right. */
     .about-body {
@@ -296,7 +297,7 @@
   <script defer src="assets/vendor/howler.min.js?v=1786300000"></script>
   <script type="module" src="scripts/subpage.js?v=1786300000"></script>
   <script type="module">
-    import { formatTime, formatDate } from "./scripts/clock.js?v=1786300000";
+    import { formatTime, formatDate, segDigits } from "./scripts/clock.js?v=1786300000";
     const root = document.getElementById("about-clock");
     const dateEl = root.querySelector(".date");
     const timeEl = root.querySelector(".time");
@@ -305,7 +306,7 @@
       const d = new Date();
       const { hhmm, ampm } = formatTime(d);
       dateEl.textContent = formatDate(d);
-      timeEl.textContent = hhmm;
+      timeEl.innerHTML = segDigits(hhmm);
       ampmEl.textContent = ampm;
     };
     tick();

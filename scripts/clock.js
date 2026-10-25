@@ -13,12 +13,20 @@ export function formatDate(d) {
   return `${DAYS[d.getDay()]} ${d.getMonth() + 1}/${d.getDate()}`;
 }
 
+// DSEG7's "1" only lights the right edge of its cell; .d1 lets CSS trim the blank left half.
+export const segDigits = (s) => s.replace(/1/g, '<span class="d1">1</span>');
+
+export function clockHTML(hhmm, ampm) {
+  const [h, m] = hhmm.split(":");
+  // Colon in its own span so CSS can blink it, Wii-style.
+  return `<span class="hh">${segDigits(h)}</span><span class="colon">:</span><span class="mm">${segDigits(m)}</span><span class="ampm">${ampm}</span>`;
+}
+
 export function startClock(timeEl, dateEl) {
   const tick = () => {
     const now = new Date();
     const { hhmm, ampm } = formatTime(now);
-    // Colon in its own span so CSS can blink it, Wii-style.
-    timeEl.innerHTML = `${hhmm.replace(":", '<span class="colon">:</span>')}<span class="ampm">${ampm}</span>`;
+    timeEl.innerHTML = clockHTML(hhmm, ampm);
     dateEl.textContent = formatDate(now);
   };
   tick();

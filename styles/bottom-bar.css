@@ -78,6 +78,8 @@
   gap: 10px;
 }
 
+.clock-time .d1 { margin-left: -0.49em; }
+
 .clock-time .ampm {
   font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
   font-weight: 600;

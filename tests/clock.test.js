@@ -1,5 +1,18 @@
 import { expect, test } from "bun:test";
-import { formatTime, formatDate } from "../scripts/clock.js";
+import { formatTime, formatDate, clockHTML } from "../scripts/clock.js";
+
+test("wraps every 1 so CSS can trim its blank left half", () => {
+  expect(clockHTML("11:17", "PM")).toBe(
+    '<span class="hh"><span class="d1">1</span><span class="d1">1</span></span><span class="colon">:</span>' +
+    '<span class="mm"><span class="d1">1</span>7</span><span class="ampm">PM</span>'
+  );
+});
+
+test("leaves digits other than 1 alone", () => {
+  expect(clockHTML("5:20", "AM")).toBe(
+    '<span class="hh">5</span><span class="colon">:</span><span class="mm">20</span><span class="ampm">AM</span>'
+  );
+});
 
 test("formats midnight as 12:00 AM", () => {
   expect(formatTime(new Date("2026-04-22T00:00:00"))).toEqual({ hhmm: "12:00", ampm: "AM" });
