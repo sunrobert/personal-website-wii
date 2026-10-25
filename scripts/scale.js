@@ -34,7 +34,8 @@ export function applyScale(stageEl) {
   const stageH = onMenu ? STAGE_H : stageEl.offsetHeight || STAGE_H;
   const h = onMenu ? window.innerHeight - BOTTOM_BAR_H : window.innerHeight;
   const fit = Math.min(window.innerWidth / stageW, h / stageH);
-  const scale = onMenu ? fit * MENU_ZOOM : fit;
+  // Cap the zoom at full width, or the edge tiles clip on screens taller than 16:9.
+  const scale = onMenu ? Math.min(fit * MENU_ZOOM, window.innerWidth / stageW) : fit;
   stageEl.style.transform = `scale(${scale})`;
 }
 
