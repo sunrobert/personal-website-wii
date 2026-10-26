@@ -101,12 +101,21 @@ export function installCursor() {
   document.addEventListener("mouseup", onUp);
 
   // rAF loop: lerp the trail toward the target every frame so it can never get
-  // permanently left behind, regardless of how fast the cursor moves.
+  // permanently left behind, regardless of how fast the cursor moves. It parks
+  // once the trail has caught up so an idle page isn't redrawn 120x a second.
+  let running = false;
   const tick = () => {
     trailX += (targetX - trailX) * TRAIL_EASE;
     trailY += (targetY - trailY) * TRAIL_EASE;
+    if (Math.abs(targetX - trailX) < 0.1 && Math.abs(targetY - trailY) < 0.1) {
+      trailX = targetX;
+      trailY = targetY;
+      running = false;
+    }
     trail.style.transform = `translate3d(${trailX}px, ${trailY}px, 0)`;
-    requestAnimationFrame(tick);
+    if (running) requestAnimationFrame(tick);
   };
-  requestAnimationFrame(tick);
+  document.addEventListener("mousemove", () => {
+    if (!running) { running = true; requestAnimationFrame(tick); }
+  });
 }
