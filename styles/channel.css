@@ -85,7 +85,10 @@
   to   { opacity: 1; transform: translateX(0); }
 }
 #channels .channel {
-  animation: channel-intro 600ms var(--ease-menu) both;
+  /* backwards, not both: a forwards fill keeps the end keyframe applied, and
+     animations outrank inline styles, so gsap's zoom and the hover lift would
+     never show after the intro. */
+  animation: channel-intro 600ms var(--ease-menu) backwards;
 }
 /* Returning from a channel (html.returning set by the inline pre-paint
    script): the intro must not replay — a running CSS animation on transform
