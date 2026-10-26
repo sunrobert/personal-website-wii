@@ -1,6 +1,6 @@
 export function renderBottomBar(container) {
   container.innerHTML = `
-    <svg class="swoosh" viewBox="0 0 1280 100" preserveAspectRatio="none" aria-hidden="true">
+    <svg class="swoosh swoosh--fill" viewBox="0 0 1280 100" preserveAspectRatio="none" aria-hidden="true">
       <defs>
         <linearGradient id="swoosh-fill-grad" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stop-color="#e6e8ec" stop-opacity="0.95"/>
@@ -8,9 +8,10 @@ export function renderBottomBar(container) {
           <stop offset="100%" stop-color="#b9bcc2" stop-opacity="0.95"/>
         </linearGradient>
       </defs>
-      <path class="swoosh-fill"
-            d="M-60,55 Q200,10 400,40 T800,45 T1340,30 L1340,100 L-60,100 Z"
+      <path d="M-60,55 Q200,10 400,40 T800,45 T1340,30 L1340,100 L-60,100 Z"
             fill="url(#swoosh-fill-grad)"/>
+    </svg>
+    <svg class="swoosh swoosh--line" viewBox="0 0 1280 100" preserveAspectRatio="none" aria-hidden="true">
       <path class="swoosh-glow"
             d="M-60,55 Q200,10 400,40 T800,45 T1340,30"
             fill="none" stroke="#6fb6ff" stroke-width="8" opacity="0.35"

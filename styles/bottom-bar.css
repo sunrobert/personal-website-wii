@@ -24,6 +24,8 @@
   inset: 0;
   z-index: 0;
   pointer-events: none;
+  /* the curve overhangs the viewBox by 60 units each side, which covers the drift */
+  overflow: visible;
 }
 
 .bb-btn {
@@ -120,15 +122,15 @@ html.returning #bottom-bar { animation: none; }
   100% { transform: translateX(-20px); }
 }
 
-.swoosh-fill, .swoosh-line, .swoosh-glow {
-  transform-box: fill-box;
-  transform-origin: center;
+/* Animate the <svg> boxes, not the paths inside: transforms on SVG children
+   can't be composited, so they forced layout + a blurred repaint every frame. */
+.swoosh {
   animation: swoosh-drift 20s ease-in-out infinite;
+  will-change: transform;
 }
 
-.swoosh-line { animation-delay: -2s; }
-.swoosh-glow { animation-delay: -2s; }
+.swoosh--line { animation-delay: -2s; }
 
 @media (prefers-reduced-motion: reduce) {
-  .swoosh-fill, .swoosh-line, .swoosh-glow { animation: none; }
+  .swoosh { animation: none; }
 }
