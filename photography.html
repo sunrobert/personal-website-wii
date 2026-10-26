@@ -338,6 +338,7 @@
     //   2. List the filenames (in display order) in the `images` array.
     //   3. Set `thumb` to the file you want as the cover tile (a path or
     //      one of the filenames inside the project folder).
+    //   4. Run `python3 tools/make-thumbs.py` to rebuild the small covers.
     // ------------------------------------------------------------------
     const PROJECTS = [
       { slug: "japan-25", title: "Japan '25", thumb: "DSC04749.jpg", images: [
@@ -425,7 +426,7 @@
     // --- Render the project grid -------------------------------------
     const grid = document.getElementById("project-grid");
     grid.innerHTML = PROJECTS.map((p) => {
-      const thumb = p.thumb ? resolvePath(p, p.thumb) : (p.images[0] ? resolvePath(p, p.images[0]) : "");
+      const thumb = p.images.length ? `assets/photography/_thumbs/${p.slug}.jpg` : "";
       const count = p.images.length;
       return `
         <button class="project-card" data-slug="${p.slug}" aria-label="Open ${p.title}">
