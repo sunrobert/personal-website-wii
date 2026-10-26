@@ -517,10 +517,20 @@
     // filter change mid-flight retargets smoothly instead of restarting.
     // The stagger delay is inline and cleared once the card has entered —
     // otherwise every later hover/press would inherit the delay.
-    function enterCards(list, stepMs = 40) {
-      list.forEach((c, i) => {
+    // Order is by on-screen position, not DOM order: CSS columns put DOM
+    // order down column 1 first, which left the top of column 3 waiting
+    // over a second. Off-screen cards skip the stagger entirely.
+    function enterCards(list, stepMs = 40, maxMs = 280) {
+      const panel = columns.closest(".subpage-panel").getBoundingClientRect();
+      const top = Math.max(0, panel.top);
+      const bottom = Math.min(innerHeight, panel.bottom);
+      const placed = list.map((c) => ({ c, r: c.getBoundingClientRect() }))
+        .sort((a, b) => (a.r.top - b.r.top) || (a.r.left - b.r.left));
+      let k = 0;
+      placed.forEach(({ c, r }) => {
         c.classList.remove("entered");
-        c.style.transitionDelay = `${i * stepMs}ms`;
+        const onScreen = r.top < bottom && r.bottom > top;
+        c.style.transitionDelay = onScreen ? `${Math.min(k++ * stepMs, maxMs)}ms` : "0ms";
       });
       requestAnimationFrame(() => requestAnimationFrame(() => {
         list.forEach((c) => {
