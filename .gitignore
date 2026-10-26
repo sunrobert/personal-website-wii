@@ -3,5 +3,6 @@
 .DS_Store
 .gstack/
 .vercel/
+demo-video/
 node_modules/
 skills-lock.json
