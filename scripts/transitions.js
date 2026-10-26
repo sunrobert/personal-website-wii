@@ -27,9 +27,11 @@ export function zoomIntoChannel(channelEl, href) {
     href,
   };
 
+  // Reset the grid only once the preview has faded in over the flash, or the
+  // restored tiles ghost through the 0.25s preview fade.
   const openPreview = () => {
     showChannelPreview(channel);
-    resetMenuZoom(channelEl, others, flash);
+    gsap.delayedCall(0.3, () => resetMenuZoom(channelEl, others, flash));
   };
 
   if (prefersReducedMotion()) {
